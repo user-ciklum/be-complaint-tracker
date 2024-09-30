@@ -54,7 +54,7 @@ const Dashboard = () => {
         {/* Add Toolbar for space under the fixed AppBar */}
         <Toolbar />
         {/* Content Area */}
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" style={{minWidth: '100%'}}>
           {isShowSelectedView === "chart" && <ChartView viewClickHandler={viewClickHandler} />}
           {isShowSelectedView === "grid" && <GridView viewClickHandler={viewClickHandler} />}
           {isShowSelectedView === "detail" &&

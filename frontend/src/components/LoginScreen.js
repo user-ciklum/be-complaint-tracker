@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { Snackbar } from '@mui/material';
+
 import {
   TextField,
   Button,
@@ -14,12 +16,29 @@ import {
   Paper,
 } from '@mui/material';
 
+const Notification = ({ message, open, onClose }) => (
+  <Snackbar
+    open={open}
+    autoHideDuration={6000}
+    onClose={onClose}
+    message={message}
+    action={<Button color="inherit" onClick={onClose}>Close</Button>}
+  />
+);
+
+
 const LoginScreen = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+
   const [selectedRole, setSelectedRole] = useState('parent');
   const [otpTimer, setOtpTimer] = useState(60);
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const navigate = useNavigate();
+
+  
 
   useEffect(() => {
     let timer;
@@ -37,6 +56,8 @@ const LoginScreen = () => {
     if (!isOtpSent) {
     //   alert(`OTP sent to ${data.mobileNumber}`);
       setIsOtpSent(true);
+      setSnackbarMessage('OTP sent successfully!');
+    setSnackbarOpen(true);
       setOtpTimer(60); // Reset the timer on sending OTP
     } else {
     //   alert(`Logged in as ${selectedRole}`);
@@ -140,6 +161,11 @@ const LoginScreen = () => {
           >
             {isOtpSent ? 'Verify OTP & Login' : 'Send OTP'}
           </Button>
+          <Notification
+        message={snackbarMessage}
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+      />
         </form>
       </Paper>
     </Container>
