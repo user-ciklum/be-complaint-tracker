@@ -3,6 +3,7 @@ import { config, dialect } from "../config/db.config";
 import ComplaintList from "../models/compaintList.model";
 import Users from "../models/users.model";
 import Otps from "../models/otp.module";
+import Institutes from "../models/institute.model";
 
 class Database {
   public sequelize: Sequelize | undefined;
@@ -24,7 +25,7 @@ class Database {
         acquire: config.pool.acquire,
         idle: config.pool.idle
       },
-      models: [ComplaintList,Users,Otps]
+      models: [ComplaintList, Users, Otps, Institutes]
     });
 
     await this.sequelize
