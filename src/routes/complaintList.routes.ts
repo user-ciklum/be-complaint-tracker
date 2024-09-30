@@ -1,9 +1,9 @@
 import { Router } from "express";
-import TutorialController from "../controllers/tutorial.controller";
+import ComplaintListController from "../controllers/complaintList.controller";
 
-class TutorialRoutes {
+class ComplaintListRoutes {
   router = Router();
-  controller = new TutorialController();
+  controller = new ComplaintListController();
 
   constructor() {
     this.intializeRoutes();
@@ -33,4 +33,4 @@ class TutorialRoutes {
   }
 }
 
-export default new TutorialRoutes().router;
+export default new ComplaintListRoutes().router;
