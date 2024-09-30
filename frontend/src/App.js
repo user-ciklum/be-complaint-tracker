@@ -1,30 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, Button } from '@mui/material';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
-import { lightTheme, darkTheme } from './themes';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import './index.css'; // Ensure this is imported to apply global styles
+import Page1 from './components/GridView';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: 'Trebutech MS, Arial, sans-serif', // Set your font family here
+  },
+});
 
 function App() {
-  const [theme, setTheme] = useState(lightTheme);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === lightTheme ? darkTheme : lightTheme));
-  };
-
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Button onClick={toggleTheme} variant="contained" sx={{ position: 'absolute', top: 16, right: 16 }}>
-          Toggle Theme
-        </Button>
+      <Router>        
         <Routes>
           <Route path="/" element={<LoginScreen />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/page-1" element={<Page1 />} />
         </Routes>
       </Router>
-    </ThemeProvider>
+      </ThemeProvider>
   );
 }
 

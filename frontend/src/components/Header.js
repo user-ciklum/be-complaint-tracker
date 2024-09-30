@@ -14,10 +14,11 @@ const Header = () => {
         {/* Icons on the right */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton color="inherit"><Home /></IconButton>
-          <IconButton color="inherit"><Report /></IconButton>
-          <IconButton color="inherit"><Feedback /></IconButton>
+          {/* <IconButton color="inherit"><Report /></IconButton> */}
+          {/* <IconButton color="inherit"><Feedback /></IconButton> */}
           <IconButton color="inherit"><Notifications /></IconButton>
           <IconButton color="inherit"><Help /></IconButton>
+          <span>Logged in as John P.</span>
           {/* User Avatar */}
           <IconButton color="inherit">
             <Avatar alt="User" src="https://randomuser.me/api/portraits/men/10.jpg" />

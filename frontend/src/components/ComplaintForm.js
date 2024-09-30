@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Drawer, List, ListItem, ListItemIcon, ListItemText,
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
   TextField, Select, MenuItem, InputLabel, FormControl
 } from '@mui/material';
@@ -13,6 +12,7 @@ const colleges = ['College 1', 'College 2', 'College 3', 'College 4', 'College 5
 const complaintsToOptions = [
   'Teacher', 'Student', 'Transport', 'Library', 'Management', 'Staff/Co-workers'
 ];
+const severities = ['High', 'Moderate', 'Low']
 
 const fakeData = {
   'Student': Array.from({ length: 50 }, (_, i) => `Student ${i + 1}`),
@@ -23,56 +23,18 @@ const fakeData = {
   'Staff/Co-workers': Array.from({ length: 20 }, (_, i) => `Staff/Co-worker ${i + 1}`)
 };
 
-const SideMenu = () => {
-  const [open, setOpen] = useState(false);
+const ComplaintForm = ({open, onClose}) => {
   const [selectedCollege, setSelectedCollege] = useState('');
+  const [severity, setSeverity] = useState('');
+
   const [selectedComplaintTo, setSelectedComplaintTo] = useState('');
   const [selectedComplaintDetail, setSelectedComplaintDetail] = useState('');
-
-  // Open dialog
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  // Close dialog
-  const handleClose = () => {
-    setOpen(false);
-  };
+ 
 
   return (
     <>
-      <Drawer variant="permanent" anchor="left">
-        <List>
-          <ListItem button>
-            <ListItemIcon><Home /></ListItemIcon>
-            <ListItemText primary="Dashboard Overview" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><Report /></ListItemIcon>
-            <ListItemText primary="View All Complaints" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><Warning /></ListItemIcon>
-            <ListItemText primary="Escalations" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><Assessment /></ListItemIcon>
-            <ListItemText primary="Reports" />
-          </ListItem>
-        </List>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Add />}
-          sx={{ position: 'absolute', bottom: 20, left: 20 }}
-          onClick={handleClickOpen}
-        >
-          Raise Complaint
-        </Button>
-      </Drawer>
-
       {/* Dialog for Raising Complaint */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <DialogTitle>Raise a Complaint</DialogTitle>
         <DialogContent>
           {/* Select School/College */}
@@ -87,7 +49,17 @@ const SideMenu = () => {
               ))}
             </Select>
           </FormControl>
-
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Severity</InputLabel>
+            <Select
+              value={severity}
+              onChange={(e) => setSeverity(e.target.value)}
+            >
+              {severities.map((item) => (
+                <MenuItem key={item} value={item}>{item}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>          
           {/* Complaint To */}
           <FormControl fullWidth margin="normal">
             <InputLabel>Complaint To</InputLabel>
@@ -130,12 +102,12 @@ const SideMenu = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
-          <Button onClick={handleClose} color="primary">Submit Complaint</Button>
+          <Button onClick={onClose} color="secondary">Cancel</Button>
+          <Button onClick={onClose} color="primary">Submit Complaint</Button>
         </DialogActions>
       </Dialog>
     </>
   );
 };
 
-export default SideMenu;
+export default ComplaintForm;
