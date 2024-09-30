@@ -4,8 +4,8 @@ import Otps from "../models/otp.module";
 
 interface IUsersRepository {
   save(users: Users): Promise<Users>;
-  retrieveAll(searchParams: {name: string, active: boolean}): Promise<Users[]>;
-  retrieveByMobileNumber(searchParams: {name: string, active: boolean}): Promise<Users | null>;
+  retrieveAll(searchParams: { name: string, active: boolean }): Promise<Users[]>;
+  retrieveByMobileNumber(searchParams: { name: string, active: boolean }): Promise<Users | null>;
   retrieveById(usersId: number): Promise<Users | null>;
   update(users: Users): Promise<number>;
   delete(usersId: number): Promise<number>;
@@ -22,7 +22,7 @@ class UsersRepository implements IUsersRepository {
       return await Users.create({
         name: users.name,
         mobilenumber: users.mobilenumber,
-        type: users.type,
+        role: users.role,
         active: users.active
       });
     } catch (err) {
@@ -30,7 +30,7 @@ class UsersRepository implements IUsersRepository {
     }
   }
 
-  async retrieveAll(searchParams: {name?: string, active?: boolean}): Promise<Users[]> {
+  async retrieveAll(searchParams: { name?: string, active?: boolean }): Promise<Users[]> {
     try {
       let condition: SearchCondition = {};
 
@@ -45,7 +45,7 @@ class UsersRepository implements IUsersRepository {
     }
   }
 
-  async retrieveByMobileNumber(searchParams: {mobilenumber?: string, active?: boolean}): Promise<Users | null> {
+  async retrieveByMobileNumber(searchParams: { mobilenumber?: string, active?: boolean }): Promise<Users | null> {
     try {
       let condition: SearchCondition = {};
 
@@ -60,14 +60,14 @@ class UsersRepository implements IUsersRepository {
       }
 
       console.log("condition", condition);
-      const users =  await Users.findOne({ where: condition });
-      console.log("user1",users?.get());
+      const users = await Users.findOne({ where: condition });
+      console.log("user1", users?.get());
       return users?.get();
     } catch (error) {
-      console.log("err1",error)
+      console.log("err1", error)
       throw new Error("Failed to retrieve Users!");
     }
-}
+  }
 
   async retrieveById(usersId: number): Promise<Users | null> {
     try {
@@ -78,11 +78,11 @@ class UsersRepository implements IUsersRepository {
   }
 
   async update(users: Users): Promise<number> {
-    const { id, name, mobilenumber, type, active } = users;
+    const { id, name, mobilenumber, role, active } = users;
 
     try {
       const affectedRows = await Users.update(
-        { name, mobilenumber, type, active },
+        { name, mobilenumber, role, active },
         { where: { id: id } }
       );
 
