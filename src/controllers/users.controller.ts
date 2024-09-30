@@ -26,10 +26,39 @@ export default class UsersController {
   }
 
   async findAll(req: Request, res: Response) {
-    const name = typeof req.query.name === "string" ? req.query.name : "";
-
     try {
-      const userss = await usersRepository.retrieveAll({ name });
+
+      const searchParams = {} as Users;
+
+      if (req.query.name && typeof req.query.name === 'string') {
+        searchParams.name = req.query.name;
+      }
+
+      if (req.query.role && typeof req.query.role === 'string') {
+        searchParams.role = req.query.role as "student" | "teacher" | "management";
+      }
+
+      if (req.query.institute_type && typeof req.query.institute_type === 'string') {
+        searchParams.institute_type = req.query.institute_type as "school" | "college";
+      }
+
+      if (req.query.institute_id && typeof req.query.institute_id === 'string') {
+        searchParams.institute_id = req.query.institute_id;
+      }
+
+      if (req.query.mobilenumber && typeof req.query.mobilenumber === 'string') {
+        searchParams.mobilenumber = req.query.mobilenumber;
+      }
+
+      if (req.query.class && typeof req.query.class === 'string') {
+        searchParams.class = [req.query.class];
+      }
+
+      if (req.query.active !== undefined && (req.query.active === 'true' || req.query.active === 'false')) {
+        searchParams.active = req.query.active === 'true';
+      }
+
+      const userss = await usersRepository.retrieveAll(searchParams);
 
       res.status(200).send(userss);
     } catch (err) {
@@ -116,7 +145,9 @@ export default class UsersController {
 
   async findAllActive(req: Request, res: Response) {
     try {
-      const userss = await usersRepository.retrieveAll({ active: true });
+      const searchParams = { active: true } as Users;
+
+      const userss = await usersRepository.retrieveAll(searchParams);
 
       res.status(200).send(userss);
     } catch (err) {

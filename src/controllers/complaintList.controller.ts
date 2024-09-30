@@ -26,15 +26,61 @@ export default class ComplaintListController {
   }
 
   async findAll(req: Request, res: Response) {
-    const complaintType = typeof req.query.compaintType === "string" ? req.query.compaintType : "";
-
     try {
-      const complaintList = await complaintListRepository.retrieveAll({ complaintType });
+      // Dynamically build search parameters based on available query parameters
+      const searchParams = {} as ComplaintList;
+
+      if (req.query.complaintType && typeof req.query.complaintType === 'string') {
+        searchParams.complaintType = req.query.complaintType;
+      }
+
+      if (req.query.instituteType && typeof req.query.instituteType === 'string') {
+        searchParams.inistituteType = req.query.instituteType;
+      }
+
+      if (req.query.subType && typeof req.query.subType === 'string') {
+        searchParams.subType = req.query.subType;
+      }
+
+      if (req.query.description && typeof req.query.description === 'string') {
+        searchParams.description = req.query.description;
+      }
+
+      if (req.query.assignedTo && typeof req.query.assignedTo === 'string') {
+        searchParams.assignedTo = req.query.assignedTo;
+      }
+
+      if (req.query.createdBy && typeof req.query.createdBy === 'string') {
+        searchParams.createdBy = req.query.createdBy;
+      }
+
+      if (req.query.updatedBy && typeof req.query.updatedBy === 'string') {
+        searchParams.updatedBy = req.query.updatedBy;
+      }
+
+      if (req.query.resolution && typeof req.query.resolution === 'string') {
+        searchParams.resolution = req.query.resolution;
+      }
+
+      if (req.query.remainder && typeof req.query.remainder === 'string') {
+        searchParams.remainder = req.query.remainder;
+      }
+
+      if (req.query.criticality && typeof req.query.criticality === 'string') {
+        searchParams.criticality = req.query.criticality;
+      }
+
+      if (req.query.active !== undefined && (req.query.active === 'true' || req.query.active === 'false')) {
+        searchParams.active = req.query.active === 'true';
+      }
+
+      // Call the repository method to retrieve complaints based on the search parameters
+      const complaintList = await complaintListRepository.retrieveAll(searchParams);
 
       res.status(200).send(complaintList);
     } catch (err) {
       res.status(500).send({
-        message: "Some error occurred while retrieving complaintList."
+        message: "Some error occurred while retrieving the complaint list.",
       });
     }
   }
@@ -116,7 +162,8 @@ export default class ComplaintListController {
 
   async findAllPublished(req: Request, res: Response) {
     try {
-      const complaintList = await complaintListRepository.retrieveAll({ active: true });
+      const searchParams = { active: true } as ComplaintList;
+      const complaintList = await complaintListRepository.retrieveAll(searchParams);
 
       res.status(200).send(complaintList);
     } catch (err) {
