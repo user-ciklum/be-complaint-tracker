@@ -34,6 +34,10 @@ export default class ComplaintListController {
         searchParams.complaintType = req.query.complaintType;
       }
 
+      if (req.query.complaintOn && typeof req.query.complaintOn === 'string') {
+        searchParams.complaintOn = req.query.complaintOn;
+      }
+
       if (req.query.instituteType && typeof req.query.instituteType === 'string') {
         searchParams.inistituteType = req.query.instituteType;
       }

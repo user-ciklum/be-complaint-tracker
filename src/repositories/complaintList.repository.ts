@@ -20,6 +20,7 @@ class ComplaintListRepository implements IComplaintListRepository {
       return await ComplaintList.create({
         inistituteType: complaintList.inistituteType,
         complaintType: complaintList.complaintType,
+        complaintOn: complaintList.complaintOn,
         subType: complaintList.subType,
         description: complaintList.description,
         assignedTo: complaintList.assignedTo,
@@ -74,6 +75,7 @@ class ComplaintListRepository implements IComplaintListRepository {
       id,
       inistituteType,
       complaintType,
+      complaintOn,
       subType,
       description,
       assignedTo,
@@ -90,6 +92,7 @@ class ComplaintListRepository implements IComplaintListRepository {
           id,
           inistituteType,
           complaintType,
+          complaintOn,
           subType,
           description,
           assignedTo,

@@ -23,7 +23,13 @@ export default class ComplaintList extends Model {
     field: "complaintType"
   })
   complaintType?: string;
-  
+
+  @Column({
+    type: DataType.STRING(255),
+    field: "complaintOn"
+  })
+  complaintOn?: string;
+
   @Column({
     type: DataType.STRING(255),
     field: "subType"
@@ -59,7 +65,7 @@ export default class ComplaintList extends Model {
     field: "criticality"
   })
   criticality?: string;
-  
+
   @Column({
     type: DataType.INTEGER,
     field: "createdBy"
