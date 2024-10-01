@@ -80,7 +80,9 @@ export default class AuthController {
         const name = typeof req.query.name === "string" ? req.query.name : "";
 
         try {
-            const userss = await usersRepository.retrieveAll({ name });
+            const searchParams = { name } as Users;
+
+            const userss = await usersRepository.retrieveAll(searchParams);
 
             res.status(200).send(userss);
         } catch (err) {
@@ -167,7 +169,9 @@ export default class AuthController {
 
     async findAllActive(req: Request, res: Response) {
         try {
-            const userss = await usersRepository.retrieveAll({ active: true });
+            const searchParams = { active: true } as Users;
+
+            const userss = await usersRepository.retrieveAll(searchParams);
 
             res.status(200).send(userss);
         } catch (err) {
