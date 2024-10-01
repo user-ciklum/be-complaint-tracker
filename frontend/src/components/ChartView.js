@@ -74,7 +74,7 @@ const ChartView = (props) => {
           <Grid container spacing={3}>
             {/* Chart 1: Complaint Status */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2 }} onClick={(event) => clickHandler(event, "chart1")}>
+              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }} onClick={(event) => clickHandler(event, "chart1")}>
                 <Chart
                   chartType="PieChart"
                   data={complaintStatusData}
@@ -90,7 +90,7 @@ const ChartView = (props) => {
 
             {/* Chart 2: Complaint Categories */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2 }} onClick={(event) => clickHandler(event, "chart2")}>
+              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }} onClick={(event) => clickHandler(event, "chart2")}>
               <Chart
                 chartType="ColumnChart"
                 data={complaintCategoryData}
@@ -114,7 +114,7 @@ const ChartView = (props) => {
 
             {/* Chart 3: Complaint Timeline */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2 }} onClick={(event) => clickHandler(event, "chart3")}>
+              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer'}} onClick={(event) => clickHandler(event, "chart3")}>
                 <Chart
                   chartType="LineChart"
                   data={complaintTimelineData}
@@ -131,7 +131,7 @@ const ChartView = (props) => {
 
             {/* Chart 4: Complaint Resolution */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2 }}>
+              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }}>
                 <Chart
                   chartType="BarChart"
                   data={complaintResolutionData}
@@ -148,7 +148,7 @@ const ChartView = (props) => {
 
             {/* Chart 5: Urgency Levels */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2 }}>
+              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }}>
                 <Chart
                   chartType="PieChart"
                   data={complaintUrgencyData}
@@ -164,7 +164,7 @@ const ChartView = (props) => {
 
             {/* Chart 6: Assigned Complaints */}
             <Grid item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2 }}>
+              <Paper elevation={3} sx={{ padding: 2,  cursor: 'pointer' }}>
                 <Chart
                   chartType="PieChart"
                   data={complaintAssignedToData}

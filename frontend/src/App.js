@@ -5,7 +5,6 @@ import Dashboard from './components/Dashboard';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './index.css'; // Ensure this is imported to apply global styles
-import Page1 from './components/GridView';
 
 const theme = createTheme({
   typography: {
@@ -20,7 +19,6 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginScreen />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/page-1" element={<Page1 />} />
         </Routes>
       </Router>
       </ThemeProvider>
