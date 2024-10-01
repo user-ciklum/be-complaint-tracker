@@ -34,7 +34,7 @@ class UsersRoutes {
     this.router.post("/login", this.controller.login);
 
     // Login route
-    this.router.get("/bulk-insert", this.controller.bulkUserImport);
+    this.router.get("/bulk/insert", this.controller.bulkUserImport);
 
   }
 }
