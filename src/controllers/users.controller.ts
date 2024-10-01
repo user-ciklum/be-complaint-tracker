@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Users from "../models/users.model";
 import usersRepository from "../repositories/users.repository";
+import path from "path";
+import fs from "fs";
 
 export default class UsersController {
   async create(req: Request, res: Response) {
@@ -35,7 +37,7 @@ export default class UsersController {
       }
 
       if (req.query.role && typeof req.query.role === 'string') {
-        searchParams.role = req.query.role as "student" | "teacher" | "management";
+        searchParams.role = req.query.role as "student" | "teacher" | "management" | "admin";
       }
 
       if (req.query.institute_type && typeof req.query.institute_type === 'string') {
@@ -169,6 +171,40 @@ export default class UsersController {
       res.status(200).send({ userInfo: user });
     } catch (err) {
       res.status(500).send({ message: "Login failed" });
+    }
+  }
+
+  async bulkUserImport(req: Request, res: Response) {
+    // Construct the path to the users.json file in the resource folder
+    const filePath = path.join(__dirname, "../../../resources/users.json");
+
+    try {
+      // Read the JSON file
+      const fileData = fs.readFileSync(filePath, "utf-8");
+
+      // Parse the JSON file
+      const usersArray: Users[] = JSON.parse(fileData);
+
+      // Loop through the array and save each user
+      for (const userData of usersArray) {
+        const user: Users = userData;
+
+        console.log("Looping data ----")
+        // Check if active is not provided, set to false
+        if (!user.active) {
+          user.active = false;
+        }
+
+        // Save each user to the database using the repository
+        await usersRepository.save(user);
+      }
+
+      res.status(201).send({ message: "All users were successfully inserted!" });
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        message: "Error occurred while inserting users from JSON file",
+      });
     }
   }
 }

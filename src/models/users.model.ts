@@ -39,10 +39,10 @@ export default class Users extends Model {
   name?: string;
 
   @Column({
-    type: DataType.ENUM('student', 'teacher', 'management'),
+    type: DataType.ENUM('student', 'teacher', 'management', 'admin'),
     field: "role",
   })
-  role?: 'student' | 'teacher' | 'management';
+  role?: 'student' | 'teacher' | 'management' | 'admin';
 
   @Column({
     type: DataType.ENUM('school', 'college'),
