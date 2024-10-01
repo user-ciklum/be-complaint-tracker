@@ -21,6 +21,13 @@ export default class Users extends Model {
 
   @Column({
     type: DataType.STRING(255),
+    unique: true,
+    field: "email",
+  })
+  email?: string;
+
+  @Column({
+    type: DataType.STRING(255),
     field: "password",
   })
   password?: string;
