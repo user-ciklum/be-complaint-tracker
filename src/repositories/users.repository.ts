@@ -32,6 +32,7 @@ class UsersRepository implements IUsersRepository {
         name: users.name,
         username: users.username,
         password: hashedPassword,
+        email: users.email,
         mobilenumber: users.mobilenumber,
         role: users.role,
         institute_type: users.institute_type,   // Added institute_type field
@@ -44,10 +45,17 @@ class UsersRepository implements IUsersRepository {
     }
   }
 
-  async authenticate(username: string, password: string): Promise<Users | null> {
+  async authenticate(identifier: string, password: string): Promise<Users | null> {
     try {
-      // Find the user by username
-      const user = await Users.findOne({ where: { username: username } });
+      // Find the user by email or mobile number
+      const user = await Users.findOne({
+        where: {
+          [Op.or]: [
+            { email: identifier },       // Try to find by email
+            { mobilenumber: identifier } // Or try to find by mobile number
+          ]
+        }
+      });
 
       if (!user || !user.password) {
         throw new Error("User not found!");
@@ -66,6 +74,7 @@ class UsersRepository implements IUsersRepository {
       throw new Error("Authentication failed!");
     }
   }
+
 
 
   async retrieveAll(searchParams: Users): Promise<Users[]> {
