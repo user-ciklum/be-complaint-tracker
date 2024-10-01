@@ -4,7 +4,7 @@ import complaintListRepository from "../repositories/complaintList.repository";
 
 export default class ComplaintListController {
   async create(req: Request, res: Response) {
-    if (!req.body.subType) {
+    if (!req.body.categoryType) {
       res.status(400).send({
         message: "Content can not be empty!"
       });
@@ -42,8 +42,12 @@ export default class ComplaintListController {
         searchParams.inistituteType = req.query.instituteType;
       }
 
-      if (req.query.subType && typeof req.query.subType === 'string') {
-        searchParams.subType = req.query.subType;
+      if (req.query.assignedType && typeof req.query.assignedType === 'string') {
+        searchParams.assignedType = req.query.assignedType;
+      }
+
+      if (req.query.categoryType && typeof req.query.categoryType === 'string') {
+        searchParams.categoryType = req.query.categoryType;
       }
 
       if (req.query.description && typeof req.query.description === 'string') {
@@ -72,6 +76,10 @@ export default class ComplaintListController {
 
       if (req.query.criticality && typeof req.query.criticality === 'string') {
         searchParams.criticality = req.query.criticality;
+      }
+
+       if (req.query.status && typeof req.query.status === 'string' ) {
+        searchParams.status = req.query.status;
       }
 
       if (req.query.active !== undefined && (req.query.active === 'true' || req.query.active === 'false')) {
