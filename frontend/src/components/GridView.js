@@ -13,17 +13,27 @@ import {
 
 const initialRows = [
   { id: 1, createdBy: 'user1', createdOn: '09/01/23', updatedBy: 'user2', updatedOn: '09/05/23', status: 'open', description: 'cccc', resolution: 'bla bla bla', remainder: 1, criticality: 'low' },
-  { id: 2, createdBy: 'user2', createdOn: '09/01/23', updatedBy: 'user2', updatedOn: '09/05/23', status: 'open', description: 'cccc', resolution: 'bla bla bla', remainder: 1, criticality: 'low' },
-  { id: 3, createdBy: 'user4', createdOn: '09/01/23', updatedBy: 'user2', updatedOn: '09/05/23', status: 'open', description: 'cccc', resolution: 'bla bla bla', remainder: 1, criticality: 'low' },
-  { id: 4, createdBy: 'user5', createdOn: '09/01/23', updatedBy: 'user2', updatedOn: '09/05/23', status: 'open', description: 'cccc', resolution: 'bla bla bla', remainder: 1, criticality: 'low' },
-  { id: 5, createdBy: 'user3', createdOn: '09/02/23', updatedBy: 'user4', updatedOn: '09/06/23', status: 'pending', description: 'cccc', resolution: 'bla bla bla', remainder: 2, criticality: 'medium' },
+  { id: 2, createdBy: 'user3', createdOn: '09/02/23', updatedBy: 'user4', updatedOn: '09/06/23', status: 'pending', description: 'cccc', resolution: 'bla bla bla', remainder: 2, criticality: 'medium' },
   // Add more rows as needed
 ];
 
-const GridView = () => {
+const GridView = (props) => {
+  let { viewClickHandler } = props;
   const [filterText, setFilterText] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [criticalityFilter, setCriticalityFilter] = useState('');
+
+  const viewBackClickHandler = (event) => {
+    event && event.preventDefault();
+    console.log("grid detail");
+    viewClickHandler("chart");
+  };
+
+  const handleRowClick = (params) => {
+    console.log('Row data:', params.row);
+    let selectedRow = params?.row;
+    viewClickHandler("detail", null, selectedRow);
+  };
 
   const filteredRows = initialRows.filter((row) => {
     return (
@@ -34,20 +44,21 @@ const GridView = () => {
   });
 
   const columns = [
-    { field: 'createdBy', headerName: 'Created By User ID', width: 'auto' },
-    { field: 'createdOn', headerName: 'Created On', width: 'auto' },
-    { field: 'updatedBy', headerName: 'Updated By User ID', width: 'auto' },
-    { field: 'updatedOn', headerName: 'Updated On', width: 'auto' },
-    { field: 'status', headerName: 'Status', width: 'auto' },
-    { field: 'description', headerName: 'Description', width: 'auto' },
-    { field: 'resolution', headerName: 'Resolution', width: 'auto' },
-    { field: 'remainder', headerName: 'Remainder', width: 'auto' },
-    { field: 'criticality', headerName: 'Criticality', width: 'auto' },
+    { field: 'createdBy', headerName: 'Created By User ID', width: 150 },
+    { field: 'createdOn', headerName: 'Created On', width: 120 },
+    { field: 'updatedBy', headerName: 'Updated By User ID', width: 150 },
+    { field: 'updatedOn', headerName: 'Updated On', width: 120 },
+    { field: 'status', headerName: 'Status', width: 130 },
+    { field: 'description', headerName: 'Description', width: 200 },
+    { field: 'resolution', headerName: 'Resolution', width: 200 },
+    { field: 'remainder', headerName: 'Remainder', width: 120 },
+    { field: 'criticality', headerName: 'Criticality', width: 130 },
   ];
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', overflowX: 'auto' }} style={{width: '100%'}}>
-      <Paper sx={{ padding: 3, borderRadius: '16px', backgroundColor: '#fafafa' }}>
+    <Box sx={{ padding: 4 }}>
+      <button onClick={viewBackClickHandler}>Back</button>
+      <Paper elevation={3} sx={{ padding: 3, borderRadius: '16px', backgroundColor: '#fafafa' }}>
         <Typography variant="h5" sx={{ marginBottom: 2 }}>
           Complaint Management
         </Typography>
@@ -92,16 +103,13 @@ const GridView = () => {
           </FormControl>
         </Box>
         <div style={{ height: 400, width: '100%' }}>
-          
           <DataGrid
             rows={filteredRows}
             columns={columns}
             pageSize={5}
-            rowsPerPageOptions={[10]}
+            rowsPerPageOptions={[5]}
             autoHeight
-            autoWidth
             sx={{
-              width: '100%', // Ensures DataGrid takes full width
               borderRadius: '8px',
               '& .MuiDataGrid-cell': {
                 border: 'none',
@@ -112,8 +120,10 @@ const GridView = () => {
               },
               '& .MuiDataGrid-footerCell': {
                 border: 'none',
-              }              
+              },
             }}
+            disableRowSelectionOnClick
+            onRowClick={handleRowClick}
           />
         </div>
       </Paper>

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Container, Grid2, Paper, Typography } from '@mui/material';
+import RespondForm from './RespondForm';
 
 const DetailView = (props) => {
-    let { viewClickHandler, chartType, selectedDetail } = props;
+  let { viewClickHandler, chartType, selectedDetail } = props;
+  const [open, setOpen] = useState(false);
 
   const viewBackClickHandler = (event) => {
     event && event.preventDefault();
@@ -13,6 +15,12 @@ const DetailView = (props) => {
   const respondClickHandler = (event) => {
     event && event.preventDefault();
     console.log("reply");
+    setOpen(true)
+  };
+
+  // Close dialog
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const ComplaintDetails = () => {
@@ -56,12 +64,12 @@ const DetailView = (props) => {
 
   return (
     <Container>
-      Details
       {ComplaintDetails()}
-
       <button onClick={viewBackClickHandler}>Back</button>
       <button onClick={respondClickHandler}>Respond</button>
+      <RespondForm open={open} onClose={handleClose} />
     </Container>
+    
   );
 };
 
