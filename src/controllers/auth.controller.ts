@@ -20,14 +20,14 @@ export default class AuthController {
 
             if (users) {
                 const randomOTP = crypto.randomInt(1000, 9999);
-                console.log("user2",users);
+                console.log("user2", users);
                 // Save OTP for the newly created user
                 // const otpsObj : Otps = {
                 //     userId: users.id,
                 //     otp: randomOTP,
                 //     active: true
                 // }
-                console.log("randomOTP123",randomOTP)
+                console.log("randomOTP123", randomOTP)
                 await otpRepository.save({
                     userId: users.id,
                     otp: randomOTP,
@@ -35,7 +35,7 @@ export default class AuthController {
                 });
 
                 // Return OTP in the response
-                return res.status(200).send({ otp: randomOTP });
+                return res.status(200).send({ otp: randomOTP, userId: users.id });
             } else
                 res.status(200).send({ message: "Invalid Users" })
         } catch (err) {
@@ -56,14 +56,17 @@ export default class AuthController {
         try {
             const otp = req.body.otp;
             const userId = req.body.userId;
-            const otpData = await otpRepository.verifyOtp({otp,userId})
+            const otpData = await otpRepository.verifyOtp({ otp, userId })
 
             if (otpData) {
-                   await otpRepository.update({
+                await otpRepository.update({
                     otp: otpData.otp,
                     active: false
                 });
-                return res.status(200).send({ message: "welcome" });
+
+                const users = await usersRepository.retrieveById(userId);
+
+                return res.status(200).send({ userInfo: users });
             } else
                 res.status(200).send({ message: "Invalid Otps" })
         } catch (err) {

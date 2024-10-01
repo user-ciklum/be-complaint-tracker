@@ -4,7 +4,7 @@ import Otps from "../models/otp.module";
 
 interface IUsersRepository {
   save(users: Users): Promise<Users>;
-  retrieveAll(searchParams: { name: string, active: boolean }): Promise<Users[]>;
+  retrieveAll(searchParams: Users): Promise<Users[]>;
   retrieveByMobileNumber(searchParams: { name: string, active: boolean }): Promise<Users | null>;
   retrieveById(usersId: number): Promise<Users | null>;
   update(users: Users): Promise<number>;
@@ -30,14 +30,25 @@ class UsersRepository implements IUsersRepository {
     }
   }
 
-  async retrieveAll(searchParams: { name?: string, active?: boolean }): Promise<Users[]> {
+  async retrieveAll(searchParams: Users): Promise<Users[]> {
     try {
       let condition: SearchCondition = {};
 
-      if (searchParams?.active) condition.active = true;
+      // Dynamically build search conditions based on searchParams
+      Object.keys(searchParams).forEach((key) => {
+        const value = (searchParams as any)[key];
 
-      if (searchParams?.name)
-        condition.title = { [Op.like]: `%${searchParams.active}%` };
+        // Skip undefined or null values
+        if (value !== undefined && value !== null) {
+          if (typeof value === 'string') {
+            // Use partial match for string fields
+            condition[key] = { [Op.like]: `%${value}%` };
+          } else {
+            // Direct match for non-string fields (boolean, integers, etc.)
+            condition[key] = value;
+          }
+        }
+      });
 
       return await Users.findAll({ where: condition });
     } catch (error) {
