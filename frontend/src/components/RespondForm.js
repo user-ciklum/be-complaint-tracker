@@ -24,19 +24,17 @@ const RespondForm = ({open, onClose}) => {
       {/* Dialog for Raising Complaint */}
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <DialogTitle>Respond</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Status</InputLabel>
-            <Select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              {statuses.map((item) => (
-                <MenuItem key={item} value={item}>{item}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>         
-          
+        <DialogContent>        
+          <Autocomplete
+            options={statuses}
+            value={status}
+            onChange={(e, value) => setStatus(value)}
+            renderInput={(params) => (
+              <TextField {...params} label="Status" variant="outlined" margin="normal" />
+            )}
+            fullWidth
+          />
+
           {/* Text Area for Complaint Description */}
           <TextField
             label="Response Details"

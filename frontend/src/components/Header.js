@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Avatar, Button, Box, Menu, MenuItem } from '@mui/material';
 import { Home, Report, Logout, Notifications, Help } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { CommonContext } from './Dashboard';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+  const commonContext = useContext(CommonContext);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,6 +22,16 @@ const Header = () => {
     handleClose();
   };
 
+  const viewDashboardClickHandler = (event) => {
+    event && event.preventDefault();
+    commonContext && commonContext?.viewClickHandler("chart");
+  };
+
+  const raiseComplaintClickHandler = (event) => {
+    event && event.preventDefault();
+    commonContext && commonContext?.handleRaiseComplaint();
+  };
+
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
@@ -28,7 +40,7 @@ const Header = () => {
           variant="h6" 
           noWrap 
           sx={{ flexGrow: 1, cursor: 'pointer' }} 
-          onClick={() => handleNavigate('/dashboard')} // Change this path as needed
+          onClick={viewDashboardClickHandler} // Change this path as needed
         >
           Complaint Tracker
         </Typography>
@@ -52,7 +64,7 @@ const Header = () => {
               backgroundColor: 'rgba(255, 255, 255, 0.1)', // Add a slight background on hover
             }
           }}
-            onClick={() => handleNavigate('/raise-complaint')} // Adjust the path as needed
+            onClick={raiseComplaintClickHandler} // Adjust the path as needed
           >
             Raise Complaint
           </Button>
@@ -69,13 +81,13 @@ const Header = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => handleNavigate('/home')}>
+            <MenuItem onClick={viewDashboardClickHandler}>
               <Home sx={{ marginRight: 1, color: 'blue' }} /> Home
             </MenuItem>
-            <MenuItem onClick={() => handleNavigate('/add-complaint')}>
+            <MenuItem onClick={raiseComplaintClickHandler}>
               <Report sx={{ marginRight: 1, color: 'blue' }} /> Raise Complaint
             </MenuItem>
-            <MenuItem onClick={() => handleNavigate('/logout')}>
+            <MenuItem onClick={() => handleNavigate('/')}>
               <Logout sx={{ marginRight: 1, color: 'blue' }} /> Logout
             </MenuItem>
           </Menu>

@@ -2,61 +2,59 @@ import React, { useState } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
   TextField, Select, MenuItem, InputLabel, FormControl, FormLabel, RadioGroup,
-  FormControlLabel, Radio, Box
+  FormControlLabel, Radio
 } from '@mui/material';
-import {
-  Home, Report, Warning, Assessment, Add
-} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 
-const colleges = ['College 1', 'College 2', 'College 3', 'College 4', 'College 5', 'College 6', 'College 7', 'College 8', 'College 9', 'College 10'];
-const complaintsToOptions = ['Teacher', 'Student', 'Transport', 'Management']
-  const complaintsToOptionsNonStudentRole = ['Teacher', 'Student', 'Management']
-  const complaintsToOptionsStudentRole = ['Teacher', 'Management']
-
-const severities = ['High', 'Moderate', 'Low']
+const complaintsToOptionsNonStudentRole = ['Teacher', 'Student', 'Management'];
+const complaintsToOptionsStudentRole = ['Teacher', 'Management'];
+const severities = ['High', 'Moderate', 'Low'];
 
 const fakeData = {
   'Student': Array.from({ length: 50 }, (_, i) => `Student ${i + 1}`),
   'Transport': Array.from({ length: 30 }, (_, i) => `Bus Route ${i + 1} - Driver ${i + 1}`),
-  // 'Library': Array.from({ length: 20 }, (_, i) => `Librarian ${i + 1}`),
   'Teacher': Array.from({ length: 25 }, (_, i) => `Teacher ${i + 1}`),
   'Management': Array.from({ length: 16 }, (_, i) => `Management Member ${i + 1}`),
-  // 'Staff/Co-workers': Array.from({ length: 20 }, (_, i) => `Staff/Co-worker ${i + 1}`)
 };
 
 const ComplaintForm = ({open, onClose}) => {
-  const [selectedCollege, setSelectedCollege] = useState('');
   const [severity, setSeverity] = useState('');
-
   const [selectedComplaintTo, setSelectedComplaintTo] = useState('');
   const [selectedComplaintDetail, setSelectedComplaintDetail] = useState('');
   const [selectedAssignToRole, setSelectedAssignToRole] = useState('');
-  const [selectedAssignTo, setSelectedAssignTo] = useState('');
   const [selectedAssignToRoleDetail, setSelectedAssignToRoleDetail] = useState('');
 
+  const userRole = 'student';
+  const assignToFieldsBasedOnUserRole = userRole === 'student' ? complaintsToOptionsStudentRole : complaintsToOptionsNonStudentRole
 
-  const userRole = 'parent';
-  const assignToFieldsbasedOnUserRole = userRole === 'student' ? complaintsToOptionsStudentRole : complaintsToOptionsNonStudentRole
- 
+  const clearForm = () => {
+    setSeverity("");
+    setSelectedComplaintTo("");
+    setSelectedComplaintDetail("");
+    setSelectedAssignToRole("");
+    setSelectedAssignToRoleDetail("");
+  };
+
+  const closeClickHandler = () => {
+    onClose && onClose();
+    clearForm();
+  };
 
   return (
     <>
       {/* Dialog for Raising Complaint */}
-      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <Dialog open={open} onClose={closeClickHandler} fullWidth maxWidth="sm">
         <DialogTitle>Create</DialogTitle>
         <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Severity</InputLabel>
-            <Select
-              value={severity}
-              onChange={(e) => setSeverity(e.target.value)}
-            >
-              {severities.map((item) => (
-                <MenuItem key={item} value={item}>{item}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>   
+          <Autocomplete
+            options={severities}
+            value={severity}
+            onChange={(e, value) => setSeverity(value)}
+            renderInput={(params) => (
+              <TextField {...params} label="Severity" variant="outlined" margin="normal" />
+            )}
+            fullWidth
+          />
 
           <FormControl component="fieldset" fullWidth margin="normal">
             <FormLabel component="legend">Complaint On</FormLabel>
@@ -103,7 +101,7 @@ const ComplaintForm = ({open, onClose}) => {
                 setSelectedAssignToRole(e.target.value);
               }}
             >
-              {assignToFieldsbasedOnUserRole.map((option) => (
+              {assignToFieldsBasedOnUserRole.map((option) => (
                 <FormControlLabel
                   key={option}
                   value={option}
@@ -141,8 +139,8 @@ const ComplaintForm = ({open, onClose}) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={onClose} color="secondary">Cancel</Button>
-          <Button onClick={onClose} color="primary">Complaint</Button>
+          <Button onClick={closeClickHandler} color="secondary">Cancel</Button>
+          <Button onClick={closeClickHandler} color="primary">Complaint</Button>
         </DialogActions>
       </Dialog>
     </>
