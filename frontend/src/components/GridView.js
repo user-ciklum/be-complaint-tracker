@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
+
 const initialRows = [
   { id: 1, createdBy: 'user1', createdOn: '09/01/23', updatedBy: 'user2', updatedOn: '09/05/23', status: 'open', description: 'cccc', resolution: 'bla bla bla', remainder: 1, criticality: 'low' },
   { id: 2, createdBy: 'user3', createdOn: '09/02/23', updatedBy: 'user4', updatedOn: '09/06/23', status: 'pending', description: 'cccc', resolution: 'bla bla bla', remainder: 2, criticality: 'medium' },
