@@ -24,7 +24,7 @@ class ComplaintListRoutes {
 
 
     // Retrieve comlaintlist with userid
-    this.router.get("user/:id", this.controller.retrieveByUserId);
+    this.router.get("/user/:id", this.controller.retrieveByUserId);
 
     // Update a Tutorial with id
     this.router.put("/:id", this.controller.update);

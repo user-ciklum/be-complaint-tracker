@@ -1,21 +1,41 @@
 
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Box, Toolbar, Container } from '@mui/material';
 import Header from './Header';
 import ComplaintForm from './ComplaintForm';
 import ChartView from './ChartView';
 import GridView from './GridView';
 import DetailView from './DetailView';
+import CommonApiCallService from './CommonApiCall.Service';
 export const CommonContext = createContext();
 
 const Dashboard = () => {
+  const location = useLocation();
+  const { userDetails } = location.state || {};
   const [isShowSelectedView, setIsShowSelectedView] = useState("chart");
   const [selectedChart, setSelectedChart] = useState(null);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [open, setOpen] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
+  const [allComplaints, setAllComplaints] = useState([]);
+  const [user, setUser] = useState(userDetails);
 
+  useEffect(() => {
+    CommonApiCallService.getUsers(fetchUsersApiCallbackHandler);
+    let data = { role: userDetails?.userInfo?.role, id: userDetails?.userInfo?.id };
+    CommonApiCallService.getComplaints(data, fetchComplaintsApiCallbackHandler);
+  }, []);
+
+  const fetchUsersApiCallbackHandler = (userList) => {
+    setAllUsers(userList);
+  };
+  
+  const fetchComplaintsApiCallbackHandler = (complaintList) => {
+    setAllComplaints(complaintList);
+  };
+  
   const viewClickHandler = (selectedView, chartType, selectedRow) => {
-    console.log(selectedView, " : ", chartType);
     setIsShowSelectedView(selectedView);
     !!chartType && setSelectedChart(chartType);
     !!selectedRow?.id && setSelectedDetail(selectedRow);
@@ -26,7 +46,6 @@ const Dashboard = () => {
   };
 
   const handleRaiseComplaint = () => {
-    console.log('in');
     setOpen(true);
   };
 
@@ -38,7 +57,8 @@ const Dashboard = () => {
   let contextValues = {
     viewClickHandler,
     handleRaiseComplaint,
-    setOpen
+    user: userDetails?.userInfo,
+    allUsers
   };
   
   return (
@@ -52,8 +72,14 @@ const Dashboard = () => {
           <Toolbar />
           {/* Content Area */}
           <Container maxWidth="lg" style={{minWidth: '100%'}}>
-            {isShowSelectedView === "chart" && <ChartView viewClickHandler={viewClickHandler} />}
-            {isShowSelectedView === "grid" && <GridView viewClickHandler={viewClickHandler} />}
+            {isShowSelectedView === "chart" && <ChartView
+              viewClickHandler={viewClickHandler}
+              allComplaints={allComplaints}
+            />}
+            {isShowSelectedView === "grid" && <GridView
+              viewClickHandler={viewClickHandler}
+              allComplaints={allComplaints}
+            />}
             {isShowSelectedView === "detail" &&
               <DetailView
               viewClickHandler={viewClickHandler}
@@ -62,7 +88,12 @@ const Dashboard = () => {
             />}
           </Container>
         </Box>
-        <ComplaintForm open={open} onClose={handleClose} />
+        <ComplaintForm
+          open={open}
+          onClose={handleClose}
+          allUsers={allUsers}
+          user={userDetails?.userInfo}
+        />
       </Box>
     </CommonContext.Provider>
   );

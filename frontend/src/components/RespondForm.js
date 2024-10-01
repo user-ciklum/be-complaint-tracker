@@ -1,35 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  TextField, Typography, MenuItem, InputLabel, FormControl
+  TextField, Typography
 } from '@mui/material';
 import {NotInterested, Check} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
+import CommonApiCallService from './CommonApiCall.Service';
 
-const statuses = ['Open', 'Inprogress', 'Closed'];
+const statuses = ['New', 'Inprogress', 'Closed'];
 
-const RespondForm = ({open, onClose}) => {
-const [status, setStatus] = useState('');
-const [response, setResponse] = useState('');
-const [error, setError] = useState('');
-const [isFormComplete, setIsFormComplete] = useState(false);
+const RespondForm = ({open, onClose, selectedComplaint}) => {
+  const [status, setStatus] = useState('');
+  const [response, setResponse] = useState('');
+  const [error, setError] = useState('');
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
-const handleChange = (e) => {
-  const value = e.target.value;
-  setIsFormComplete(false);
+  useEffect(() => {
+    setStatus(selectedComplaint?.status || "");
+  }, [selectedComplaint]);
 
-  // Check the length of the input
-  if (value.length < 20) {
-    setError('Minimum 20 characters required.');
-  } else if (value.length > 500) {
-    setError('Maximum 500 characters allowed.');
-  } else {
-    setIsFormComplete(true);
-    setError(''); // Clear error if input is valid
-  }  
-  setResponse(value);
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setIsFormComplete(false);
+
+    // Check the length of the input
+    if (value.length < 20) {
+      setError('Minimum 20 characters required.');
+    } else if (value.length > 500) {
+      setError('Maximum 500 characters allowed.');
+    } else {
+      setIsFormComplete(true);
+      setError(''); // Clear error if input is valid
+    }  
+    setResponse(value);
   };
 
+  const updateComplaintCallbackHandler = (data) => {
+    console.log("update success ", data);
+    onClose && onClose();
+  };
+  
+  const updateComplaintErrorCallbackHandler = () => {
+    console.log("Error");
+    onClose && onClose();
+  };
+    
+  const onSubmitHandler = () => {
+    let payload = {
+      "id": selectedComplaint?.id,
+      "status": status,
+      "resolution": response
+    };
+    
+    CommonApiCallService.updateComplaints(payload, updateComplaintCallbackHandler, updateComplaintErrorCallbackHandler);
+  };
 
   return (
     <>
@@ -67,8 +91,6 @@ const handleChange = (e) => {
         </DialogContent>
 
         <DialogActions>
-          {/* <Button onClick={onClose} color="secondary">Cancel</Button>
-          <Button onClick={onClose} color="primary">Submit</Button> */}
           <Button
             variant="outlined"
             onClick={onClose}
@@ -89,7 +111,7 @@ const handleChange = (e) => {
               type="submit"
               variant="contained"
               color="primary"
-              onClick={onClose}
+              onClick={onSubmitHandler}
               disabled={!isFormComplete}
               sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px'}}
               >

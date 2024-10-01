@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  TextField, Typography, MenuItem, InputLabel, FormControl, FormLabel, RadioGroup,
+  TextField, Typography, FormControl, FormLabel, RadioGroup,
   FormControlLabel, Radio
 } from '@mui/material';
 import { NotInterested, Check } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
+import CommonService from './Common.Service';
+import CommonApiCallService from './CommonApiCall.Service';
 
 const complaintsToOptionsNonStudentRole = ['Teacher', 'Student', 'Management'];
 const complaintsToOptionsStudentRole = ['Teacher', 'Management'];
@@ -18,18 +20,17 @@ const fakeData = {
   'Management': Array.from({ length: 16 }, (_, i) => `Management Member ${i + 1}`),
 };
 
-const ComplaintForm = ({ open, onClose }) => {
+const ComplaintForm = ({ open, onClose, user, allUsers }) => {
   const [severity, setSeverity] = useState('');
   const [selectedComplaintTo, setSelectedComplaintTo] = useState('');
-  const [selectedComplaintDetail, setSelectedComplaintDetail] = useState('');
+  const [selectedComplaintDetail, setSelectedComplaintDetail] = useState();
   const [selectedAssignToRole, setSelectedAssignToRole] = useState('');
-  const [selectedAssignToRoleDetail, setSelectedAssignToRoleDetail] = useState('');
+  const [selectedAssignToRoleDetail, setSelectedAssignToRoleDetail] = useState();
   const [complaintDesc, setComplaintDesc] = useState('');
   const [error, setError] = useState('');
   const [isFormComplete, setIsFormComplete] = useState(false);
 
-  const userRole = 'student';
-  const assignToFieldsBasedOnUserRole = userRole === 'student' ? complaintsToOptionsStudentRole : complaintsToOptionsNonStudentRole;
+  const assignToFieldsBasedOnUserRole = user?.role === 'student' ? complaintsToOptionsStudentRole : complaintsToOptionsNonStudentRole;
 
   // Handle description change with validation
   const handleDescChange = (e) => {
@@ -76,6 +77,33 @@ const ComplaintForm = ({ open, onClose }) => {
     clearForm();
   };
 
+  const addComplaintCallbackHandler = (data) => {
+    console.log("create success ", data);
+    closeClickHandler();
+  };
+  
+  const addComplaintErrorCallbackHandler = () => {
+    console.log("Error");
+    closeClickHandler();
+  };
+    
+  const onSubmitHandler = () => {
+    let payload = {
+      criticality: severity,
+      complaintType: selectedComplaintTo,
+      complaintOn: selectedComplaintDetail?.value,
+      assignedTo: selectedAssignToRoleDetail?.value,
+      assignedType: selectedAssignToRole,
+      description: complaintDesc,
+      createdBy: user.id,
+      status: "New",
+      inistituteId: user.inistituteId,
+      inistituteType: user.inistituteType,
+    };
+    
+    CommonApiCallService.addComplaint(payload, addComplaintCallbackHandler, addComplaintErrorCallbackHandler);
+  };
+
   return (
     <Dialog open={open} onClose={closeClickHandler} fullWidth maxWidth="sm">
       <DialogTitle>Create</DialogTitle>
@@ -120,7 +148,7 @@ const ComplaintForm = ({ open, onClose }) => {
 
         {selectedComplaintTo && (
           <Autocomplete
-            options={fakeData[selectedComplaintTo] || []}
+            options={CommonService.getUserListByRole(allUsers, selectedComplaintTo) || []}
             value={selectedComplaintDetail}
             onChange={(e, value) => setSelectedComplaintDetail(value)}
             renderInput={(params) => (
@@ -142,7 +170,10 @@ const ComplaintForm = ({ open, onClose }) => {
           <RadioGroup
             row
             value={selectedAssignToRole}
-            onChange={(e) => setSelectedAssignToRole(e.target.value)}
+            onChange={(e) => {
+              setSelectedAssignToRole(e.target.value);
+              setSelectedAssignToRoleDetail('');
+            }}
           >
             {assignToFieldsBasedOnUserRole.map((option) => (
               <FormControlLabel
@@ -157,7 +188,7 @@ const ComplaintForm = ({ open, onClose }) => {
 
         {selectedAssignToRole && (
           <Autocomplete
-            options={fakeData[selectedAssignToRole] || []}
+            options={CommonService.getUserListByRole(allUsers, selectedAssignToRole) || []}
             value={selectedAssignToRoleDetail}
             onChange={(e, value) => setSelectedAssignToRoleDetail(value)}
             renderInput={(params) => (
@@ -202,7 +233,7 @@ const ComplaintForm = ({ open, onClose }) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={closeClickHandler}
+          onClick={onSubmitHandler}
           startIcon={<Check />}
           sx={{ borderRadius: '12px', height: '40px' }}
           disabled={!isFormComplete} // Disable if form is not complete
