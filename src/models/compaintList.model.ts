@@ -14,6 +14,12 @@ export default class ComplaintList extends Model {
 
   @Column({
     type: DataType.STRING(255),
+    field: "inistitute id"
+  })
+  inistituteId?: string;
+  
+  @Column({
+    type: DataType.STRING(255),
     field: "inistitute type"
   })
   inistituteType?: string;
@@ -26,21 +32,21 @@ export default class ComplaintList extends Model {
 
   @Column({
     type: DataType.STRING(255),
+    field: "categoryType"
+  })
+  categoryType?: string;
+
+  @Column({
+    type: DataType.STRING(255),
     field: "complaintOn"
   })
   complaintOn?: string;
 
   @Column({
     type: DataType.STRING(255),
-    field: "subType"
+    field: "assignedType"
   })
-  subType?: string;
-
-  @Column({
-    type: DataType.STRING(255),
-    field: "description"
-  })
-  description?: string;
+  assignedType?: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -65,6 +71,18 @@ export default class ComplaintList extends Model {
     field: "criticality"
   })
   criticality?: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    field: "description"
+  })
+  description?: string;
+
+  @Column({
+    type:  DataType.STRING(255),
+    field: "status",
+  })
+  status?: string;
 
   @Column({
     type: DataType.INTEGER,

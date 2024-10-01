@@ -18,18 +18,20 @@ class ComplaintListRepository implements IComplaintListRepository {
   async save(complaintList: ComplaintList): Promise<ComplaintList> {
     try {
       return await ComplaintList.create({
+        inistituteId: complaintList.inistituteId,
         inistituteType: complaintList.inistituteType,
         complaintType: complaintList.complaintType,
+        categoryType: complaintList.categoryType,
         complaintOn: complaintList.complaintOn,
-        subType: complaintList.subType,
-        description: complaintList.description,
+        assignedType: complaintList.assignedType,
         assignedTo: complaintList.assignedTo,
         resolution: complaintList.resolution,
         remainder: complaintList.remainder,
         criticality: complaintList.criticality,
+        description: complaintList.description,
+        status: complaintList.status,
         createdBy: complaintList.createdBy,
         updatedBy: complaintList.updatedBy
-
       });
     } catch (err) {
       throw new Error("Failed to create ComplaintList!");
@@ -73,15 +75,18 @@ class ComplaintListRepository implements IComplaintListRepository {
   async update(complaintList: ComplaintList): Promise<number> {
     const {
       id,
+      inistituteId,
       inistituteType,
       complaintType,
       complaintOn,
-      subType,
-      description,
+      categoryType,
+      assignedType,
       assignedTo,
       resolution,
       remainder,
       criticality,
+      description,
+      status,
       createdBy,
       updatedBy
     } = complaintList;
@@ -90,15 +95,18 @@ class ComplaintListRepository implements IComplaintListRepository {
       const affectedRows = await ComplaintList.update(
         {
           id,
+          inistituteId,
           inistituteType,
           complaintType,
           complaintOn,
-          subType,
-          description,
+          categoryType,
+          assignedType,
           assignedTo,
           resolution,
           remainder,
           criticality,
+          description,
+          status,
           createdBy,
           updatedBy
         },
