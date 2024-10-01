@@ -23,12 +23,16 @@ class UsersRepository implements IUsersRepository {
         name: users.name,
         mobilenumber: users.mobilenumber,
         role: users.role,
-        active: users.active
+        institute_type: users.institute_type,   // Added institute_type field
+        institute_id: users.institute_id,       // Added institute_id field
+        active: users.active,
+        class: users.class                      // Added class field
       });
     } catch (err) {
       throw new Error("Failed to create Users!");
     }
   }
+
 
   async retrieveAll(searchParams: Users): Promise<Users[]> {
     try {
