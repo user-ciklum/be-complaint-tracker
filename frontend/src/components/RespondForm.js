@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  TextField, Select, MenuItem, InputLabel, FormControl
+  TextField, Typography, MenuItem, InputLabel, FormControl
 } from '@mui/material';
 import {NotInterested, Check} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
@@ -10,6 +10,25 @@ const statuses = ['Open', 'Inprogress', 'Closed'];
 
 const RespondForm = ({open, onClose}) => {
 const [status, setStatus] = useState('');
+const [response, setResponse] = useState('');
+const [error, setError] = useState('');
+const [isFormComplete, setIsFormComplete] = useState(false);
+
+const handleChange = (e) => {
+  const value = e.target.value;
+  setIsFormComplete(false);
+
+  // Check the length of the input
+  if (value.length < 20) {
+    setError('Minimum 20 characters required.');
+  } else if (value.length > 500) {
+    setError('Maximum 500 characters allowed.');
+  } else {
+    setIsFormComplete(true);
+    setError(''); // Clear error if input is valid
+  }  
+  setResponse(value);
+  };
 
 
   return (
@@ -36,8 +55,15 @@ const [status, setStatus] = useState('');
             variant="outlined"
             fullWidth
             margin="normal"
-            inputProps={{ maxLength: 1000 }}
+            value={response}
+            onChange={handleChange}
+            error={!!error} // Show error state in the text field if error exists
+            helperText={error} // Display error message
+            inputProps={{ minLength: 20, maxLength: 500 }} // Set the maxLength directly
           />
+          <Typography variant="body2" color="textSecondary">
+            {response.length}/500 characters
+          </Typography>
         </DialogContent>
 
         <DialogActions>
@@ -64,6 +90,7 @@ const [status, setStatus] = useState('');
               variant="contained"
               color="primary"
               onClick={onClose}
+              disabled={!isFormComplete}
               sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px'}}
               >
               {<Check />} &nbsp;&nbsp;Submit&nbsp;&nbsp;
