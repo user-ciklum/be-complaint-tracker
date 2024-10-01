@@ -14,13 +14,13 @@ export default class ComplaintList extends Model {
 
   @Column({
     type: DataType.STRING(255),
-    field: "inistitute id"
+    field: "inistituteId"
   })
   inistituteId?: string;
   
   @Column({
     type: DataType.STRING(255),
-    field: "inistitute type"
+    field: "inistituteType"
   })
   inistituteType?: string;
 
