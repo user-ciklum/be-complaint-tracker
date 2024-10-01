@@ -43,7 +43,7 @@ const Dashboard = () => {
   
   return (
     <CommonContext.Provider value={contextValues}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', marginTop: '-40px' }}>
         {/* Main Content */}
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {/* Header */}

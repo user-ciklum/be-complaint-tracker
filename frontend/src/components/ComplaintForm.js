@@ -4,6 +4,7 @@ import {
   TextField, Select, MenuItem, InputLabel, FormControl, FormLabel, RadioGroup,
   FormControlLabel, Radio
 } from '@mui/material';
+import {NotInterested, Check} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 
 const complaintsToOptionsNonStudentRole = ['Teacher', 'Student', 'Management'];
@@ -139,8 +140,33 @@ const ComplaintForm = ({open, onClose}) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={closeClickHandler} color="secondary">Cancel</Button>
-          <Button onClick={closeClickHandler} color="primary">Complaint</Button>
+          {/* <Button onClick={closeClickHandler} color="secondary">Cancel</Button>
+          <Button onClick={closeClickHandler} color="primary">Complaint</Button> */}
+          <Button
+            variant="outlined"
+            onClick={closeClickHandler}
+            sx={{
+              borderRadius: '14px', // Adjust the border radius for larger corners
+              padding: '8px 16px', // You can adjust the padding if needed
+              borderColor: '#ccc', // Set the border color to gray
+              '&:hover': {
+                borderColor: '#d3d3d3', // Change the border color on hover for better UX
+              },
+              minWidth: '80px', // Set a minimum width to help align the icon and text
+            }}
+            startIcon={<NotInterested />} // Add the reply icon to the button
+          >
+            Cancel
+          </Button>
+          <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={closeClickHandler}
+              sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px'}}
+              >
+              {<Check />} &nbsp;&nbsp;Complaint&nbsp;&nbsp;
+          </Button>          
         </DialogActions>
       </Dialog>
     </>

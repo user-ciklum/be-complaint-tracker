@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, IconButton, Avatar, Button, Box, Menu, Men
 import { Home, Report, Logout, Notifications, Help } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { CommonContext } from './Dashboard';
+import { Edit } from '@mui/icons-material';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -66,7 +67,7 @@ const Header = () => {
           }}
             onClick={raiseComplaintClickHandler} // Adjust the path as needed
           >
-            Raise Complaint
+            <Edit /> &nbsp;&nbsp;Raise Complaint
           </Button>
 
           
@@ -74,7 +75,8 @@ const Header = () => {
           
           {/* User Avatar with Menu */}
           <IconButton color="inherit" onClick={handleMenuClick}>
-            <Avatar alt="User" src="https://randomuser.me/api/portraits/men/10.jpg" />
+          <Avatar alt="User" src="/assets/user-icon.png" sx={{ width: 32, height: 32 }} />
+
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -85,7 +87,7 @@ const Header = () => {
               <Home sx={{ marginRight: 1, color: 'blue' }} /> Home
             </MenuItem>
             <MenuItem onClick={raiseComplaintClickHandler}>
-              <Report sx={{ marginRight: 1, color: 'blue' }} /> Raise Complaint
+              <Edit sx={{ marginRight: 1, color: 'blue' }} /> Raise Complaint
             </MenuItem>
             <MenuItem onClick={() => handleNavigate('/')}>
               <Logout sx={{ marginRight: 1, color: 'blue' }} /> Logout

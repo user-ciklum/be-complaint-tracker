@@ -1,135 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { Snackbar } from '@mui/material';
+  import React, { useState, useEffect } from 'react';
+  import { useForm } from 'react-hook-form';
+  import { useNavigate } from 'react-router-dom';
+  import { Snackbar } from '@mui/material';
+  import { IconButton, InputAdornment } from '@mui/material';
+  import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import {
-  TextField,
-  Button,
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Typography,
-  Container,
-  Paper,
-} from '@mui/material';
+  import {
+    TextField,
+    Button,
+    Box,
+    Typography,
+    Container,
+    Paper,
+  } from '@mui/material';
 
-const Notification = ({ message, open, onClose }) => (
-  <Snackbar
-    open={open}
-    autoHideDuration={6000}
-    onClose={onClose}
-    message={message}
-    action={<Button color="inherit" onClick={onClose}>Close</Button>}
-  />
-);
-
-
-const LoginScreen = () => {
-  const [isOtpSent, setIsOtpSent] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
-
-  const [selectedRole, setSelectedRole] = useState('parent');
-  const [otpTimer, setOtpTimer] = useState(60);
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
-  const navigate = useNavigate();
-
-  
-
-  useEffect(() => {
-    let timer;
-    if (isOtpSent && otpTimer > 0) {
-      timer = setInterval(() => {
-        setOtpTimer((prev) => prev - 1);
-      }, 1000);
-    } else if (otpTimer === 0) {
-      setIsOtpSent(false);
-    }
-    return () => clearInterval(timer);
-  }, [isOtpSent, otpTimer]);
-
-  const onSubmit = (data) => {
-    if (!isOtpSent) {
-    //   alert(`OTP sent to ${data.mobileNumber}`);
-      setIsOtpSent(true);
-      setSnackbarMessage('OTP sent successfully!');
-    setSnackbarOpen(true);
-      setOtpTimer(60); // Reset the timer on sending OTP
-    } else {
-    //   alert(`Logged in as ${selectedRole}`);
-      navigate('/dashboard');
-    }
-  };
-
-  const handleRoleChange = (event) => {
-    setSelectedRole(event.target.value);
-  };
-
-  const handleResendOtp = () => {
-    if (!isOtpSent) {
-      alert("Please send OTP first!");
-      return;
-    }
-    alert(`OTP resent to ${watch('mobileNumber')}`);
-    setOtpTimer(60); // Reset the timer on resending OTP
-  };
-
-  return (
-    <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ padding: 4, marginTop: 8 }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Typography variant="h4" gutterBottom>
-            Login
-          </Typography>
-
-          {/* Mobile Number Input */}
-          <TextField
-            fullWidth
-            label="Mobile Number"
-            variant="outlined"
-            margin="normal"
-            {...register('mobileNumber', {
-              required: 'Mobile number is required',
-              pattern: {
-                value: /^[6-9]\d{9}$/,
-                message: 'Invalid mobile number',
-              },
-            })}
-            error={!!errors.mobileNumber}
-            helperText={errors.mobileNumber ? errors.mobileNumber.message : ''}
-          />
-
-          <TextField
-            fullWidth
-            label="Password"
-            variant="outlined"
-            margin="normal"
-          />
-
-          {/* Login Button */}
-          <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ marginTop: 2 }}
-            disabled={otpTimer === 0 && isOtpSent} // Disable if OTP has expired
-          >
-            Login
-          </Button>
-          <Notification
-        message={snackbarMessage}
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-      />
-        </form>
-      </Paper>
-    </Container>
+  const Notification = ({ message, open, onClose }) => (
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
+      onClose={onClose}
+      message={message}
+      action={<Button color="inherit" onClick={onClose}>Close</Button>}
+    />
   );
-};
 
-export default LoginScreen;
+  const LoginScreen = () => {
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [mobileNumber, setMobileNumber] = useState('');
+    const [mobileNumberError, setMobileNumberError] = useState('');
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+    const navigate = useNavigate();
+
+    const password = watch('password');
+
+    useEffect(() => {
+      setIsFormValid(password?.length);
+    }, [password])
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => {
+      setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+      event.preventDefault();
+    };
+
+    const handleMobileNumberChange = (number) => {
+      const value = number;
+      
+      // Check if the input is a number using a regex
+      const isValid = /^[0-9]*$/.test(value);
+  
+      if (!isValid) {
+        setMobileNumberError('Only numbers are allowed');
+      } else return true;
+    };
+    
+
+    // Mobile number validation logic
+    useEffect(() => {
+      const numbersOnly = handleMobileNumberChange(mobileNumber);
+      if (numbersOnly) {
+        if (mobileNumber.length > 10) {
+          setIsFormValid(false);
+          setMobileNumberError('Mobile number cannot exceed 10 digits');
+        } else if (mobileNumber.length < 10 && mobileNumber.length > 0) {
+          setIsFormValid(false);
+          setMobileNumberError('Mobile number must be exactly 10 digits');
+        } else {
+          setIsFormValid(true);
+          setMobileNumberError('');
+        }
+      }      
+    }, [mobileNumber]);
+
+    const onSubmit = (data) => {
+        navigate('/dashboard');
+    };
+
+    return (
+      <Container maxWidth="sm" sx={{ width: '450px'}}>
+        <Paper elevation={3} sx={{ padding: 4, marginTop: 8, }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Typography variant="h4" gutterBottom>
+              Login
+            </Typography>
+
+            {/* Mobile Number Input */}
+            <TextField
+              fullWidth
+              label="Mobile Number"
+              variant="outlined"
+              margin="normal"
+              value={mobileNumber}
+              autoComplete="mobile number"
+              onChange={(e) => setMobileNumber(e.target.value)}
+              error={!!mobileNumberError}
+              helperText={mobileNumberError}
+            />
+
+            <TextField
+                  fullWidth
+                  label="Password"
+                  variant="outlined"
+                  margin="normal"
+                  type={showPassword ? 'text' : 'password'} // Toggle between 'text' and 'password'
+                  autoComplete="new-password"
+                  {...register('password', { required: 'Password is required' })}
+                  error={!!errors.password}
+                  helperText={errors.password ? errors.password.message : ''}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+            {/* Login Button */}
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ marginTop: 2, height: '48px'}}
+              disabled={!isFormValid}            >
+              Login
+            </Button>
+            
+            <Notification
+              message={snackbarMessage}
+              open={snackbarOpen}
+              onClose={() => setSnackbarOpen(false)}
+            />
+          </form>
+        </Paper>
+      </Container>
+    );
+  };
+
+  export default LoginScreen;
