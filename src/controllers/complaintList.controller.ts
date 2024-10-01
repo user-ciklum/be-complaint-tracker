@@ -78,7 +78,7 @@ export default class ComplaintListController {
         searchParams.criticality = req.query.criticality;
       }
 
-       if (req.query.status && typeof req.query.status === 'string' ) {
+      if (req.query.status && typeof req.query.status === 'string') {
         searchParams.status = req.query.status;
       }
 
@@ -111,6 +111,24 @@ export default class ComplaintListController {
     } catch (err) {
       res.status(500).send({
         message: `Error retrieving ComplaintList with id=${id}.`
+      });
+    }
+  }
+
+  async retrieveByUserId(req: Request, res: Response) {
+    const userId: number = parseInt(req.params.id);
+
+    try {
+      const ComplaintList = await complaintListRepository.retrieveByUserId(userId);
+
+      if (ComplaintList) res.status(200).send(ComplaintList);
+      else
+        res.status(404).send({
+          message: `Cannot find ComplaintList with id=${userId}.`
+        });
+    } catch (err) {
+      res.status(500).send({
+        message: `Error retrieving ComplaintList with id=${userId}.`
       });
     }
   }

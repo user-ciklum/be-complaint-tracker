@@ -64,6 +64,21 @@ class ComplaintListRepository implements IComplaintListRepository {
     }
   }
 
+  async retrieveByUserId(userId: any): Promise<ComplaintList[]> {
+    try {
+      return await ComplaintList.findAll({
+        where: {
+          [Op.or]: [
+            { assignedTo: userId },
+            { createdBy: userId }
+          ]
+        }
+      });
+    } catch (error) {
+      throw new Error("Failed to retrieve Complaint!");
+    }
+  }
+
   async retrieveById(complaintId: number): Promise<ComplaintList | null> {
     try {
       return await ComplaintList.findByPk(complaintId);
