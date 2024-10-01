@@ -158,8 +158,8 @@ const GridView = (props) => {
             autoHeight
             sx={{
               borderRadius: '8px',
-              '& .MuiDataGrid-cell': {
-                border: 'none',
+              '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+                outline: "none !important",
               },
               '& .MuiDataGrid-columnHeaders': {
                 backgroundColor: '#e0e0e0',
@@ -167,6 +167,9 @@ const GridView = (props) => {
               },
               '& .MuiDataGrid-footerCell': {
                 border: 'none',
+              },
+              '& .MuiDataGrid-row:hover': {
+                cursor: 'pointer', // Hand cursor on row hover
               },
               '& .MuiDataGrid-row:nth-of-type(odd)': {
                 backgroundColor: '#f9f9f9', // Lighter background color for odd rows
