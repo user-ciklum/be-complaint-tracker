@@ -29,6 +29,10 @@ class UsersRoutes {
 
     // Delete all Tutorials
     this.router.delete("/", this.controller.deleteAll);
+
+    // Login route
+    this.router.post("/login", this.controller.login);
+
   }
 }
 

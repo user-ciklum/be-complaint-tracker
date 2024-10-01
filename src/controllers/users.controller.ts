@@ -156,4 +156,19 @@ export default class UsersController {
       });
     }
   }
+
+  async login(req: Request, res: Response) {
+    const { username, password } = req.body;
+
+    try {
+      const user = await usersRepository.authenticate(username, password);
+      if (!user) {
+        return res.status(401).send({ message: "Invalid credentials" });
+      }
+
+      res.status(200).send({ userInfo: user });
+    } catch (err) {
+      res.status(500).send({ message: "Login failed" });
+    }
+  }
 }

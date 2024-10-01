@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import Users from "../models/users.model";
 import Otps from "../models/otp.module";
+import bcrypt from 'bcrypt';
 
 interface IUsersRepository {
   save(users: Users): Promise<Users>;
@@ -18,9 +19,19 @@ interface SearchCondition {
 
 class UsersRepository implements IUsersRepository {
   async save(users: Users): Promise<Users> {
+
+    if (!users.password || !users.username) {
+      throw new Error("Username and Password are required!");
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(users.password, saltRounds);
+
     try {
       return await Users.create({
         name: users.name,
+        username: users.username,
+        password: hashedPassword,
         mobilenumber: users.mobilenumber,
         role: users.role,
         institute_type: users.institute_type,   // Added institute_type field
@@ -30,6 +41,29 @@ class UsersRepository implements IUsersRepository {
       });
     } catch (err) {
       throw new Error("Failed to create Users!");
+    }
+  }
+
+  async authenticate(username: string, password: string): Promise<Users | null> {
+    try {
+      // Find the user by username
+      const user = await Users.findOne({ where: { username: username } });
+
+      if (!user || !user.password) {
+        throw new Error("User not found!");
+      }
+
+      // Compare the password with the hashed password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        throw new Error("Invalid password!");
+      }
+
+      // Return the user if authentication is successful
+      return user;
+    } catch (err) {
+      throw new Error("Authentication failed!");
     }
   }
 
