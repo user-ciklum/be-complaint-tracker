@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react';
 import { Container, Paper, Typography, Button, Box} from '@mui/material';
 import RespondForm from './RespondForm';
 import { Reply, ArrowBack, Description } from '@mui/icons-material';
-import { ExpandMore, Info } from '@mui/icons-material';
+import { Info } from '@mui/icons-material';
 import CommonService from './Common.Service';
 import { CommonContext } from './Dashboard';
+
+const displayStatuses = { New: "New", Inprogress: "In progress", Closed: "Closed" };
 
 const DetailView = (props) => {
   const commonContext = useContext(CommonContext);
@@ -58,7 +60,7 @@ const DetailView = (props) => {
                   <strong>Complaint ID:</strong> {selectedDetail.id}
                 </td>
                 <td style={{ padding: '10px' }}>
-                  <strong>Date Submitted:</strong> {selectedDetail.createdOn}
+                  <strong>Date Submitted:</strong> {selectedDetail.createdOnDate}
                 </td>
               </tr>
 
@@ -68,7 +70,7 @@ const DetailView = (props) => {
                   <strong>Complainant:</strong> {CommonService.getUserNameById(commonContext?.allUsers, selectedDetail.createdBy)}
                 </td>
                 <td style={{ padding: '10px' }}>
-                  <strong>Status:</strong> {selectedDetail.status}
+                  <strong>Status:</strong> {displayStatuses[selectedDetail?.status]}
                 </td>
               </tr>
 
@@ -135,6 +137,7 @@ const DetailView = (props) => {
           open={open}
           onClose={handleClose}
           selectedComplaint={selectedDetail}
+          viewBackClickHandler={viewBackClickHandler}
         />
       </Paper>
     </Container>

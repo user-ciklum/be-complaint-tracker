@@ -54,11 +54,24 @@ const Dashboard = () => {
     setOpen(false);
   };
 
+  const updateAllComplaints = (data, isNew) => {
+    let updatedList = [...allComplaints];
+    if (isNew) {
+      updatedList.push(data);
+    } else {
+      let complaintIndex = updatedList.findIndex((complaint) => complaint.id === data.id);
+      updatedList[complaintIndex] = { ...data };
+    }
+
+    setAllComplaints(updatedList);
+  };
+
   let contextValues = {
     viewClickHandler,
     handleRaiseComplaint,
     user: userDetails?.userInfo,
-    allUsers
+    allUsers,
+    updateAllComplaints
   };
   
   return (

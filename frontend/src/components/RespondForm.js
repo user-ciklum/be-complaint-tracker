@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  TextField, Typography
+  TextField, Typography, Alert,
+  Paper,
 } from '@mui/material';
 import {NotInterested, Check} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 import CommonApiCallService from './CommonApiCall.Service';
+import { CommonContext } from './Dashboard';
 
 const statuses = ['New', 'Inprogress', 'Closed'];
 
-const RespondForm = ({open, onClose, selectedComplaint}) => {
+const RespondForm = ({ open, onClose, selectedComplaint, viewBackClickHandler }) => {
+  const commonContext = useContext(CommonContext);
   const [status, setStatus] = useState('');
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
   const [isFormComplete, setIsFormComplete] = useState(false);
-
+  const [isServiceFailed, setIsServiceFailed] = useState(false);
+  
   useEffect(() => {
     setStatus(selectedComplaint?.status || "");
   }, [selectedComplaint]);
@@ -36,20 +40,23 @@ const RespondForm = ({open, onClose, selectedComplaint}) => {
   };
 
   const updateComplaintCallbackHandler = (data) => {
-    console.log("update success ", data);
+    commonContext && commonContext?.updateAllComplaints(data);
+    viewBackClickHandler && viewBackClickHandler();
     onClose && onClose();
   };
   
   const updateComplaintErrorCallbackHandler = () => {
-    console.log("Error");
-    onClose && onClose();
+    setIsServiceFailed(true);
   };
     
   const onSubmitHandler = () => {
+    let user = commonContext && commonContext?.user;
+    setIsServiceFailed(false);
     let payload = {
-      "id": selectedComplaint?.id,
-      "status": status,
-      "resolution": response
+      id: selectedComplaint?.id,
+      status: status,
+      resolution: response,
+      updatedBy: user?.id,
     };
     
     CommonApiCallService.updateComplaints(payload, updateComplaintCallbackHandler, updateComplaintErrorCallbackHandler);
@@ -59,7 +66,13 @@ const RespondForm = ({open, onClose, selectedComplaint}) => {
     <>
       {/* Dialog for Raising Complaint */}
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-        <DialogTitle>Respond</DialogTitle>
+        <DialogTitle>Respond
+          {isServiceFailed && (
+            <Alert severity="error" sx={{ marginTop: '8px' }}>
+              Something went wrong. Please try again.
+            </Alert>
+          )}
+        </DialogTitle>
         <DialogContent>        
           <Autocomplete
             options={statuses}
@@ -113,7 +126,11 @@ const RespondForm = ({open, onClose, selectedComplaint}) => {
               color="primary"
               onClick={onSubmitHandler}
               disabled={!isFormComplete}
-              sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px'}}
+            sx={{
+              padding: '16px 16px',
+              borderRadius: '12px',
+              height: '40px'
+            }}
               >
               {<Check />} &nbsp;&nbsp;Submit&nbsp;&nbsp;
             </Button>

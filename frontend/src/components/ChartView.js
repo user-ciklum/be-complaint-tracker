@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import { Box, Toolbar, Container, Grid2, Paper } from '@mui/material';
+import { Box, Toolbar, Container, Paper } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import Header from './Header';
 import { Chart } from 'react-google-charts';
 // import { Button } from '@mui/material';
@@ -30,38 +31,56 @@ const ChartView = (props) => {
         <Toolbar />
         {/* Content Area */}
         <Container>
-          {!!chartDataList.length && <Grid2 container spacing={3}>
+          {!!chartDataList.length && <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
               {/* Chart 1: Complaint Status */}
-              <Grid2 item xs={12} md={6}>
+              <Grid size={6}>
                 <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }} onClick={(event) => clickHandler(event, "chart1")}>
                   <Chart
                     chartType="PieChart"
                     data={CommonService.getDataByKey(chartDataList, "status", "data")}
                     options={{
                       title: CommonService.getDataByKey(chartDataList, "status", "label"),
+                      titleTextStyle: {
+                        fontSize: 14,
+                        bold: true
+                      },
+                      chartArea: { width: '80%' },
                       pieHole: 0.4,
+                      legend: {
+                        position: "bottom",
+                        alignment: "center",
+                        textStyle: {
+                          color: "#233238",
+                          fontSize: 13,
+                        },
+                      },
+                      colors: ["#109618", "#ffbf00", "#0080ff"]
                     }}
                     width="100%"
                     height="300px"
                   />
                 </Paper>
-              </Grid2>
+              </Grid>
 
               {/* Chart 2: Complaint Categories */}
-              <Grid2 item xs={12} md={6}>
+              <Grid size={6}>
                 <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }} onClick={(event) => clickHandler(event, "chart2")}>
                   <Chart
                     chartType="ColumnChart"
                     data={CommonService.getDataByKey(chartDataList, "complaintType", "data")}
                     options={{
                       title: CommonService.getDataByKey(chartDataList, "complaintType", "label"),
+                      titleTextStyle: {
+                        fontSize: 14,
+                        bold: true
+                      },
+                      chartArea: { width: '80%' },
                       vAxis: {
                         title: 'Number of Complaints',
                       },
                       hAxis: {
                         title: 'Categories',
                       },
-                      colors: ['#ff9999', '#66b3ff', '#99ff99'], // Customize colors
                       legend: { position: 'none' }, // Hide legend if not needed
                     }}
                     width="100%"
@@ -69,74 +88,67 @@ const ChartView = (props) => {
                   />
 
                 </Paper>
-              </Grid2>
+              </Grid>
 
-              {/* Chart 3: Complaint Timeline
-            <Grid2 item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer'}} onClick={(event) => clickHandler(event, "chart3")}>
-                <Chart
-                  chartType="LineChart"
-                  data={complaintTimelineData}
-                  options={{
-                    title: 'Complaint Timeline (by Day)',
-                    hAxis: { title: 'Days of the Week' },
-                    vAxis: { title: 'Number of Complaints' },
-                  }}
-                  width="100%"
-                  height="300px"
-                />
-              </Paper>
-            </Grid2>
-
-            {/* Chart 4: Complaint Resolution
-            <Grid2 item xs={12} md={6}>
-              <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }}>
-                <Chart
-                  chartType="BarChart"
-                  data={complaintResolutionData}
-                  options={{
-                    title: 'Complaint Resolutions',
-                    hAxis: { title: 'Number' },
-                    vAxis: { title: 'Resolution Type' },
-                  }}
-                  width="100%"
-                  height="300px"
-                />
-              </Paper>
-            </Grid2> */}
-
-              {/* Chart 5: Urgency Levels */}
-              <Grid2 item xs={12} md={6}>
+              {/* Chart 3: Urgency Levels */}
+              <Grid size={6}>
                 <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }}>
                   <Chart
                     chartType="PieChart"
                     data={CommonService.getDataByKey(chartDataList, "criticality", "data")}
                     options={{
                       title: CommonService.getDataByKey(chartDataList, "criticality", "label"),
+                      titleTextStyle: {
+                        fontSize: 14,
+                        bold: true
+                      },
+                      chartArea: { width: '80%' },
+                      legend: {
+                        position: "bottom",
+                        alignment: "center",
+                        textStyle: {
+                          color: "#233238",
+                          fontSize: 13,
+                        },
+                      },
+                      colors: ["#3366cc", "#ff9900", "#dc3912"],
                     }}
                     width="100%"
                     height="300px"
                   />
                 </Paper>
-              </Grid2>
+              </Grid>
 
-              {/* Chart 6: Assigned Complaints */}
-              
-              <Grid2 item xs={12} md={6}>
+              {/* Chart 4: Assigned Complaints */}              
+              <Grid size={6}>
                 <Paper elevation={3} sx={{ padding: 2, cursor: 'pointer' }}>
                   <Chart
                     chartType="PieChart"
                     data={CommonService.getDataByKey(chartDataList, "assignedType", "data")}
                     options={{
                       title: CommonService.getDataByKey(chartDataList, "assignedType", "label"),
+                      titleTextStyle: {
+                        fontSize: 14,
+                        bold: true
+                      },
+                      chartArea: { width: '80%' },
                       pieHole: 0.4,
+                      legend: {
+                        position: "bottom",
+                        alignment: "center",
+                        textStyle: {
+                          color: "#233238",
+                          fontSize: 13,
+                        },
+                      },
+                      colors: ["#3366cc", "#ff9900", "#dc3912"],
                     }}
                     width="100%"
                     height="300px"
                   />
                 </Paper>
-              </Grid2>
-            </Grid2>
+              </Grid>
+            </Grid>
           }
         </Container>
       </Box>

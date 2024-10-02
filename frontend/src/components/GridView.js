@@ -66,8 +66,9 @@ const GridView = (props) => {
     { field: 'criticality', headerName: 'Criticality', width: 130 },
     { field: 'resolution', headerName: 'Resolution', width: 150 }, // Decreased width
     { field: 'status', headerName: 'Status', width: 100 }, // Decreased width
-    { field: 'updatedBy', headerName: 'Updated By', width: 150 },
-    { field: 'updatedOn', headerName: 'Updated On', width: 120 },
+    { field: 'createdOnDate', headerName: 'Created On', width: 120 },
+    { field: 'updatedByName', headerName: 'Updated By', width: 150 },
+    { field: 'updatedOnDate', headerName: 'Updated On', width: 120 },
   ];
 
   return (
@@ -162,12 +163,18 @@ const GridView = (props) => {
                 cursor: 'pointer', // Hand cursor on row hover
               },
               '& .MuiDataGrid-row:nth-of-type(odd)': {
-                backgroundColor: '#f9f9f9', // Lighter background color for odd rows
+                backgroundColor: '#f9f9f9',
               },
               '& .MuiDataGrid-row:nth-of-type(even)': {
-                backgroundColor: '#f1f1f1', // Lighter background color for even rows
+                backgroundColor: '#f1f1f1',
               },
-              minHeight: '300px', // Minimum height for the table body
+              '& .MuiDataGrid-row:nth-of-type(odd):hover': {
+                backgroundColor: '#e0f7fa',
+              },
+              '& .MuiDataGrid-row:nth-of-type(even):hover': {
+                backgroundColor: '#e0f7fa'
+              },
+              minHeight: '300px',
             }}
             disableRowSelectionOnClick
             onRowClick={handleRowClick}

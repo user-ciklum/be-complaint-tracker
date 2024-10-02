@@ -1,7 +1,7 @@
   import React, { useState, useEffect } from 'react';
   import { useForm } from 'react-hook-form';
   import { useNavigate } from 'react-router-dom';
-  import { Snackbar } from '@mui/material';
+  import { Alert, Snackbar } from '@mui/material';
   import { IconButton, InputAdornment } from '@mui/material';
   import { Visibility, VisibilityOff } from '@mui/icons-material';
   import {
@@ -30,7 +30,8 @@ import CommonApiCallService from './CommonApiCall.Service';
     const [mobileNumberError, setMobileNumberError] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    
+    const [isServiceFailed, setIsServiceFailed] = useState(false);
+
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const navigate = useNavigate();
     const password = watch('password');
@@ -76,15 +77,15 @@ import CommonApiCallService from './CommonApiCall.Service';
     };
 
   const userLoginCallbackHandler = (userDetails) => {
-    console.log("success ", userDetails);
     navigate('/dashboard', { state: { userDetails } });
   };
   
   const userLoginErrorCallbackHandler = () => {
-    console.log("Error");
+    setIsServiceFailed(true);
   };
     
   const onSubmit = () => {
+    setIsServiceFailed(false);
     let payload = {
       "username": mobileNumber,
       "password": password
@@ -100,7 +101,13 @@ import CommonApiCallService from './CommonApiCall.Service';
             <Typography variant="h4" gutterBottom>
               Login
             </Typography>
-
+            {/* Conditionally render the error banner */}
+            {isServiceFailed && (
+              <Alert severity="error">
+                You have entered an invalid credentials!
+              </Alert>
+            )}
+            
             {/* Mobile Number Input */}
             <TextField
               fullWidth
