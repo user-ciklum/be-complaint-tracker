@@ -91,7 +91,7 @@ const ComplaintForm = ({ open, onClose, user, allUsers }) => {
     let payload = {
       criticality: severity,
       complaintType: selectedComplaintTo.toLowerCase(),
-      // categoryType: selectedComplaintTo.toLowerCase(),
+      categoryType: selectedComplaintTo.toLowerCase(),
       complaintOn: complaintOn.toString(),
       assignedTo: assignedTo.toString(),
       assignedType: selectedAssignToRole.toLowerCase(),
