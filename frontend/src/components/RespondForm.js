@@ -1,41 +1,78 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  TextField, Typography, MenuItem, InputLabel, FormControl
+  TextField, Typography, Alert,
+  Paper,
 } from '@mui/material';
 import {NotInterested, Check} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
+import CommonApiCallService from './CommonApiCall.Service';
+import { CommonContext } from './Dashboard';
 
-const statuses = ['Open', 'Inprogress', 'Closed'];
+const statuses = ['New', 'Inprogress', 'Closed'];
 
-const RespondForm = ({open, onClose}) => {
-const [status, setStatus] = useState('');
-const [response, setResponse] = useState('');
-const [error, setError] = useState('');
-const [isFormComplete, setIsFormComplete] = useState(false);
+const RespondForm = ({ open, onClose, selectedComplaint, viewBackClickHandler }) => {
+  const commonContext = useContext(CommonContext);
+  const [status, setStatus] = useState('');
+  const [response, setResponse] = useState('');
+  const [error, setError] = useState('');
+  const [isFormComplete, setIsFormComplete] = useState(false);
+  const [isServiceFailed, setIsServiceFailed] = useState(false);
+  
+  useEffect(() => {
+    setStatus(selectedComplaint?.status || "");
+  }, [selectedComplaint]);
 
-const handleChange = (e) => {
-  const value = e.target.value;
-  setIsFormComplete(false);
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setIsFormComplete(false);
 
-  // Check the length of the input
-  if (value.length < 20) {
-    setError('Minimum 20 characters required.');
-  } else if (value.length > 500) {
-    setError('Maximum 500 characters allowed.');
-  } else {
-    setIsFormComplete(true);
-    setError(''); // Clear error if input is valid
-  }  
-  setResponse(value);
+    // Check the length of the input
+    if (value.length < 20) {
+      setError('Minimum 20 characters required.');
+    } else if (value.length > 500) {
+      setError('Maximum 500 characters allowed.');
+    } else {
+      setIsFormComplete(true);
+      setError(''); // Clear error if input is valid
+    }  
+    setResponse(value);
   };
 
+  const updateComplaintCallbackHandler = (data) => {
+    commonContext && commonContext?.updateAllComplaints(data);
+    viewBackClickHandler && viewBackClickHandler();
+    onClose && onClose();
+  };
+  
+  const updateComplaintErrorCallbackHandler = () => {
+    setIsServiceFailed(true);
+  };
+    
+  const onSubmitHandler = () => {
+    let user = commonContext && commonContext?.user;
+    setIsServiceFailed(false);
+    let payload = {
+      id: selectedComplaint?.id,
+      status: status,
+      resolution: response,
+      updatedBy: user?.id,
+    };
+    
+    CommonApiCallService.updateComplaints(payload, updateComplaintCallbackHandler, updateComplaintErrorCallbackHandler);
+  };
 
   return (
     <>
       {/* Dialog for Raising Complaint */}
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-        <DialogTitle>Respond</DialogTitle>
+        <DialogTitle>Respond
+          {isServiceFailed && (
+            <Alert severity="error" sx={{ marginTop: '8px' }}>
+              Something went wrong. Please try again.
+            </Alert>
+          )}
+        </DialogTitle>
         <DialogContent>        
           <Autocomplete
             options={statuses}
@@ -67,8 +104,6 @@ const handleChange = (e) => {
         </DialogContent>
 
         <DialogActions>
-          {/* <Button onClick={onClose} color="secondary">Cancel</Button>
-          <Button onClick={onClose} color="primary">Submit</Button> */}
           <Button
             variant="outlined"
             onClick={onClose}
@@ -89,9 +124,13 @@ const handleChange = (e) => {
               type="submit"
               variant="contained"
               color="primary"
-              onClick={onClose}
+              onClick={onSubmitHandler}
               disabled={!isFormComplete}
-              sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px'}}
+            sx={{
+              padding: '16px 16px',
+              borderRadius: '12px',
+              height: '40px'
+            }}
               >
               {<Check />} &nbsp;&nbsp;Submit&nbsp;&nbsp;
             </Button>

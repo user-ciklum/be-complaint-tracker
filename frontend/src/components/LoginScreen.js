@@ -1,18 +1,17 @@
   import React, { useState, useEffect } from 'react';
   import { useForm } from 'react-hook-form';
   import { useNavigate } from 'react-router-dom';
-  import { Snackbar } from '@mui/material';
+  import { Alert, Snackbar } from '@mui/material';
   import { IconButton, InputAdornment } from '@mui/material';
   import { Visibility, VisibilityOff } from '@mui/icons-material';
-
   import {
     TextField,
     Button,
-    Box,
     Typography,
     Container,
     Paper,
   } from '@mui/material';
+import CommonApiCallService from './CommonApiCall.Service';
 
   const Notification = ({ message, open, onClose }) => (
     <Snackbar
@@ -30,17 +29,33 @@
     const [mobileNumber, setMobileNumber] = useState('');
     const [mobileNumberError, setMobileNumberError] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [isServiceFailed, setIsServiceFailed] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const navigate = useNavigate();
-
     const password = watch('password');
 
     useEffect(() => {
       setIsFormValid(password?.length);
     }, [password])
 
-    const [showPassword, setShowPassword] = useState(false);
+    // Mobile number validation logic
+    useEffect(() => {
+      const numbersOnly = handleMobileNumberChange(mobileNumber);
+      if (numbersOnly) {
+        if (mobileNumber.length > 10) {
+          setIsFormValid(false);
+          setMobileNumberError('Mobile number cannot exceed 10 digits');
+        } else if (mobileNumber.length < 10 && mobileNumber.length > 0) {
+          setIsFormValid(false);
+          setMobileNumberError('Mobile number must be exactly 10 digits');
+        } else {
+          setIsFormValid(true);
+          setMobileNumberError('');
+        }
+      }      
+    }, [mobileNumber]);
 
     const handleClickShowPassword = () => {
       setShowPassword(!showPassword);
@@ -60,28 +75,24 @@
         setMobileNumberError('Only numbers are allowed');
       } else return true;
     };
+
+  const userLoginCallbackHandler = (userDetails) => {
+    navigate('/dashboard', { state: { userDetails } });
+  };
+  
+  const userLoginErrorCallbackHandler = () => {
+    setIsServiceFailed(true);
+  };
     
-
-    // Mobile number validation logic
-    useEffect(() => {
-      const numbersOnly = handleMobileNumberChange(mobileNumber);
-      if (numbersOnly) {
-        if (mobileNumber.length > 10) {
-          setIsFormValid(false);
-          setMobileNumberError('Mobile number cannot exceed 10 digits');
-        } else if (mobileNumber.length < 10 && mobileNumber.length > 0) {
-          setIsFormValid(false);
-          setMobileNumberError('Mobile number must be exactly 10 digits');
-        } else {
-          setIsFormValid(true);
-          setMobileNumberError('');
-        }
-      }      
-    }, [mobileNumber]);
-
-    const onSubmit = (data) => {
-        navigate('/dashboard');
+  const onSubmit = () => {
+    setIsServiceFailed(false);
+    let payload = {
+      "username": mobileNumber,
+      "password": password
     };
+    
+    CommonApiCallService.userLogin(payload, userLoginCallbackHandler, userLoginErrorCallbackHandler);
+  };
 
     return (
       <Container maxWidth="sm" sx={{ width: '450px'}}>
@@ -90,7 +101,13 @@
             <Typography variant="h4" gutterBottom>
               Login
             </Typography>
-
+            {/* Conditionally render the error banner */}
+            {isServiceFailed && (
+              <Alert severity="error">
+                You have entered an invalid credentials!
+              </Alert>
+            )}
+            
             {/* Mobile Number Input */}
             <TextField
               fullWidth
@@ -137,7 +154,7 @@
               variant="contained"
               color="primary"
               sx={{ marginTop: 2, height: '48px'}}
-              disabled={!isFormValid}            >
+              disabled={!isFormValid}>
               Login
             </Button>
             

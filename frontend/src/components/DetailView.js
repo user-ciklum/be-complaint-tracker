@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Paper, Typography, Button, Box} from '@mui/material';
 import RespondForm from './RespondForm';
 import { Reply, ArrowBack, Description } from '@mui/icons-material';
-import { ExpandMore, Info } from '@mui/icons-material';
+import { Info } from '@mui/icons-material';
+import CommonService from './Common.Service';
+import { CommonContext } from './Dashboard';
 
+const displayStatuses = { New: "New", Inprogress: "In progress", Closed: "Closed" };
 
 const DetailView = (props) => {
+  const commonContext = useContext(CommonContext);
   let { viewClickHandler, chartType, selectedDetail } = props;
   const [open, setOpen] = useState(false);
 
   const viewBackClickHandler = (event) => {
     event && event.preventDefault();
-    console.log(chartType);
     viewClickHandler("grid", chartType);
   };
 
   const respondClickHandler = (event) => {
     event && event.preventDefault();
-    console.log("reply");
     setOpen(true);
   };
 
@@ -58,17 +60,17 @@ const DetailView = (props) => {
                   <strong>Complaint ID:</strong> {selectedDetail.id}
                 </td>
                 <td style={{ padding: '10px' }}>
-                  <strong>Date Submitted:</strong> {selectedDetail.createdOn}
+                  <strong>Date Submitted:</strong> {selectedDetail.createdOnDate}
                 </td>
               </tr>
 
               {/* Third Row */}
               <tr>
                 <td style={{ padding: '10px' }}>
-                  <strong>Complainant:</strong> {selectedDetail.createdBy}
+                  <strong>Complainant:</strong> {CommonService.getUserNameById(commonContext?.allUsers, selectedDetail.createdBy)}
                 </td>
                 <td style={{ padding: '10px' }}>
-                  <strong>Status:</strong> {selectedDetail.status}
+                  <strong>Status:</strong> {displayStatuses[selectedDetail?.status]}
                 </td>
               </tr>
 
@@ -86,16 +88,15 @@ const DetailView = (props) => {
 
               {/* Fifth Row */}
               <tr>
-                <td style={{ padding: '0px 14px' }}>
-                  <strong>Description:</strong> {selectedDetail.reason}
+                <td colSpan='2' style={{ padding: '0px 14px' }}>
+                  <strong>Description:</strong> {selectedDetail.description}
                 </td>
               </tr>
 
               {/* Sixth Row */}
               <tr >
                 <td colSpan='2' style={{ padding: '14px' }}>
-                  <strong>Resolution:</strong> {selectedDetail.resolution} Designers around the world will love to use gray color shades in their layouts or UI designs to look more professional and modern.
-Get these best handpicked colors with HEX & RGB color codes for maintaining the design trend, Keep rocking!
+                  <strong>Resolution:</strong> {selectedDetail.resolution}
                 </td>
               </tr>
             </tbody>
@@ -132,7 +133,12 @@ Get these best handpicked colors with HEX & RGB color codes for maintaining the 
           </Button>          
         </div>
 
-        <RespondForm open={open} onClose={handleClose} />
+        <RespondForm
+          open={open}
+          onClose={handleClose}
+          selectedComplaint={selectedDetail}
+          viewBackClickHandler={viewBackClickHandler}
+        />
       </Paper>
     </Container>
   );

@@ -1,6 +1,19 @@
 import Api from "../Api";
 
 const CommonApiCallService = {
+    userLogin(payload, userLoginCallbackHandler, userLoginErrorCallbackHandler) {
+        let url = `api/Users/login`;
+    
+        Api.post(url, payload)
+        .then((response) => {
+            userLoginCallbackHandler(response?.data);
+        })
+        .catch((error) => {
+            console.error("There was an error!", error);
+            userLoginErrorCallbackHandler && userLoginErrorCallbackHandler();
+        });
+    },
+    
     getUsers(fetchUsersApiCallbackHandler) {
         let url = `api/Users`;
         Api.get(url)
@@ -12,8 +25,9 @@ const CommonApiCallService = {
         });
     },
     
-    getComplaints(fetchComplaintsApiCallbackHandler) {
-        let url = `api/Complaints`;
+    getComplaints(data, fetchComplaintsApiCallbackHandler) {
+        let url = data.role === "admin" ? `api/complaint` : `api/complaint/user/${data.id}`;
+        
         Api.get(url)
         .then((response) => {
             fetchComplaintsApiCallbackHandler(response.data);
@@ -37,7 +51,7 @@ const CommonApiCallService = {
     },
 
     updateComplaints(payload, updateComplaintCallbackHandler, updateComplaintErrorCallbackHandler) {
-        let url = `api/complaint/${payload?.Id}`;
+        let url = `api/complaint/${payload?.id}`;
     
         Api.put(url, payload)
         .then((response) => {

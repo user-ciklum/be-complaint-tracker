@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Avatar, Button, Box, Menu, MenuItem } from '@mui/material';
-import { Home, Report, Logout, Notifications, Help } from '@mui/icons-material';
+import { Home, Logout } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { CommonContext } from './Dashboard';
 import { Edit } from '@mui/icons-material';
@@ -32,6 +32,12 @@ const Header = () => {
     event && event.preventDefault();
     commonContext && commonContext?.handleRaiseComplaint();
   };
+
+  const getUserInfo = () => {
+    let user = commonContext && commonContext?.user;
+    return `${user?.name || ""} (${user?.role || ""})`;
+  };
+  
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -71,7 +77,7 @@ const Header = () => {
           </Button>
 
           
-          <span>John P. (Teacher)</span>
+          <span>{getUserInfo()}</span>
           
           {/* User Avatar with Menu */}
           <IconButton color="inherit" onClick={handleMenuClick}>

@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  TextField, Typography, MenuItem, InputLabel, FormControl, FormLabel, RadioGroup,
-  FormControlLabel, Radio
+  TextField, Typography, FormControl, FormLabel, RadioGroup,
+  FormControlLabel, Radio, Alert,
+  Paper
 } from '@mui/material';
 import { NotInterested, Check } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
+import CommonService from './Common.Service';
+import CommonApiCallService from './CommonApiCall.Service';
+import { CommonContext } from './Dashboard';
 
 const complaintsToOptionsNonStudentRole = ['Teacher', 'Student', 'Management'];
 const complaintsToOptionsStudentRole = ['Teacher', 'Management'];
 const severities = ['High', 'Moderate', 'Low'];
 
-const fakeData = {
-  'Student': Array.from({ length: 50 }, (_, i) => `Student ${i + 1}`),
-  'Transport': Array.from({ length: 30 }, (_, i) => `Bus Route ${i + 1} - Driver ${i + 1}`),
-  'Teacher': Array.from({ length: 25 }, (_, i) => `Teacher ${i + 1}`),
-  'Management': Array.from({ length: 16 }, (_, i) => `Management Member ${i + 1}`),
-};
-
-const ComplaintForm = ({ open, onClose }) => {
+const ComplaintForm = ({ open, onClose, user, allUsers }) => {
+  const commonContext = useContext(CommonContext);
   const [severity, setSeverity] = useState('');
   const [selectedComplaintTo, setSelectedComplaintTo] = useState('');
-  const [selectedComplaintDetail, setSelectedComplaintDetail] = useState('');
+  const [selectedComplaintDetail, setSelectedComplaintDetail] = useState();
   const [selectedAssignToRole, setSelectedAssignToRole] = useState('');
-  const [selectedAssignToRoleDetail, setSelectedAssignToRoleDetail] = useState('');
+  const [selectedAssignToRoleDetail, setSelectedAssignToRoleDetail] = useState();
   const [complaintDesc, setComplaintDesc] = useState('');
   const [error, setError] = useState('');
   const [isFormComplete, setIsFormComplete] = useState(false);
+  const [isServiceFailed, setIsServiceFailed] = useState(false);
 
-  const userRole = 'student';
-  const assignToFieldsBasedOnUserRole = userRole === 'student' ? complaintsToOptionsStudentRole : complaintsToOptionsNonStudentRole;
+  const assignToFieldsBasedOnUserRole = user?.role === 'student' ? complaintsToOptionsStudentRole : complaintsToOptionsNonStudentRole;
 
   // Handle description change with validation
   const handleDescChange = (e) => {
@@ -76,9 +74,46 @@ const ComplaintForm = ({ open, onClose }) => {
     clearForm();
   };
 
+  const addComplaintCallbackHandler = (data) => {
+    commonContext && commonContext?.updateAllComplaints(data, true);
+    closeClickHandler();
+  };
+  
+  const addComplaintErrorCallbackHandler = () => {
+    setIsServiceFailed(true);
+  };
+    
+  const onSubmitHandler = () => {
+    setIsServiceFailed(false);
+    let complaintOn = selectedComplaintDetail?.value || "";
+    let assignedTo = selectedAssignToRoleDetail?.value || "";
+      
+    let payload = {
+      criticality: severity,
+      complaintType: selectedComplaintTo.toLowerCase(),
+      categoryType: selectedComplaintTo.toLowerCase(),
+      complaintOn: complaintOn.toString(),
+      assignedTo: assignedTo.toString(),
+      assignedType: selectedAssignToRole.toLowerCase(),
+      description: complaintDesc,
+      createdBy: user.id,
+      status: "New",
+      inistituteId: user.institute_id.toString(),
+      inistituteType: user.institute_type,
+    };
+    
+    CommonApiCallService.addComplaint(payload, addComplaintCallbackHandler, addComplaintErrorCallbackHandler);
+  };
+
   return (
     <Dialog open={open} onClose={closeClickHandler} fullWidth maxWidth="sm">
-      <DialogTitle>Create</DialogTitle>
+      <DialogTitle>Create
+        {isServiceFailed && (
+          <Alert severity="error" sx={{ marginTop: '8px' }}>
+            Something went wrong. Please try again.
+          </Alert>
+        )}
+      </DialogTitle>
       <DialogContent>
         <Autocomplete
           options={severities}
@@ -120,7 +155,7 @@ const ComplaintForm = ({ open, onClose }) => {
 
         {selectedComplaintTo && (
           <Autocomplete
-            options={fakeData[selectedComplaintTo] || []}
+            options={CommonService.getUserListByRole(allUsers, selectedComplaintTo) || []}
             value={selectedComplaintDetail}
             onChange={(e, value) => setSelectedComplaintDetail(value)}
             renderInput={(params) => (
@@ -142,7 +177,10 @@ const ComplaintForm = ({ open, onClose }) => {
           <RadioGroup
             row
             value={selectedAssignToRole}
-            onChange={(e) => setSelectedAssignToRole(e.target.value)}
+            onChange={(e) => {
+              setSelectedAssignToRole(e.target.value);
+              setSelectedAssignToRoleDetail('');
+            }}
           >
             {assignToFieldsBasedOnUserRole.map((option) => (
               <FormControlLabel
@@ -157,7 +195,7 @@ const ComplaintForm = ({ open, onClose }) => {
 
         {selectedAssignToRole && (
           <Autocomplete
-            options={fakeData[selectedAssignToRole] || []}
+            options={CommonService.getUserListByRole(allUsers, selectedAssignToRole) || []}
             value={selectedAssignToRoleDetail}
             onChange={(e, value) => setSelectedAssignToRoleDetail(value)}
             renderInput={(params) => (
@@ -202,7 +240,7 @@ const ComplaintForm = ({ open, onClose }) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={closeClickHandler}
+          onClick={onSubmitHandler}
           startIcon={<Check />}
           sx={{ borderRadius: '12px', height: '40px' }}
           disabled={!isFormComplete} // Disable if form is not complete
