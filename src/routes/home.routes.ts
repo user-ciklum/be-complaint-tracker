@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { welcome } from "../controllers/home.controller";
+import { loadData, welcome } from "../controllers/home.controller";
 
 class HomeRoutes {
   router = Router();
@@ -10,6 +10,7 @@ class HomeRoutes {
 
   intializeRoutes() {
     this.router.get("/", welcome);
+    this.router.get("/load", loadData); // Add the /load route here
   }
 }
 
