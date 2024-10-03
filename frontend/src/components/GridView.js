@@ -98,7 +98,7 @@ const GridView = (props) => {
   ];
 
   return (
-    <Box sx={{ padding: 4 }}>
+    <Box sx={{ padding: 4, paddingTop: 1 }}>
       <Button
         variant="outlined"
         onClick={viewBackClickHandler}

@@ -32,7 +32,7 @@ const DetailView = (props) => {
     <Container
       sx={{
         display: 'flex',
-        marginTop: '60px',
+        marginTop: '16px',
         background: 'white',
         justifyContent: 'center', // Center horizontally
         minHeight: '400px', // Full height of the viewport

@@ -57,7 +57,9 @@ const CommonService = {
 
     getUpdatedComplaintList(allUsers, allComplaints) {
         let updatedList = [];
-
+        // Sorting complaints by latest change on top
+        allComplaints.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        
         allComplaints.forEach((complaint) => {
             let createdAt = new Date(complaint?.createdAt || "");
             createdAt = createdAt ? createdAt?.toLocaleDateString("en-GB") : "";

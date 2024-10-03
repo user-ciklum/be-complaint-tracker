@@ -1,7 +1,7 @@
 
 import React, { createContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Toolbar, Container } from '@mui/material';
+import { Box, Toolbar, Container, Alert } from '@mui/material';
 import Header from './Header';
 import ComplaintForm from './ComplaintForm';
 import ChartView from './ChartView';
@@ -20,6 +20,8 @@ const Dashboard = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [allComplaints, setAllComplaints] = useState([]);
   const [user, setUser] = useState(userDetails);
+  const [isServiceSuccess, setIsServiceSuccess] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     CommonApiCallService.getUsers(fetchUsersApiCallbackHandler);
@@ -55,6 +57,7 @@ const Dashboard = () => {
   };
 
   const updateAllComplaints = (data, isNew) => {
+    let message = isNew ? "Your complaint has been raised successfully." : "Complaint has been updated successfully.";
     let updatedList = [...allComplaints];
     if (isNew) {
       updatedList.push(data);
@@ -64,6 +67,11 @@ const Dashboard = () => {
     }
 
     setAllComplaints(updatedList);
+    setIsServiceSuccess(true);
+    setAlertMessage(message);
+    setTimeout(() => {
+      setIsServiceSuccess(false);
+    }, 5000);
   };
 
   let contextValues = {
@@ -76,7 +84,7 @@ const Dashboard = () => {
   
   return (
     <CommonContext.Provider value={contextValues}>
-      <Box sx={{ display: 'flex', marginTop: '-40px' }}>
+      <Box sx={{ display: 'flex' }}>
         {/* Main Content */}
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {/* Header */}
@@ -84,7 +92,17 @@ const Dashboard = () => {
           {/* Add Toolbar for space under the fixed AppBar */}
           <Toolbar />
           {/* Content Area */}
-          <Container maxWidth="lg" style={{minWidth: '100%'}}>
+          <Container maxWidth="lg" style={{ minWidth: '100%' }}>
+            {/* success  */}
+            {isServiceSuccess && (
+              <div style={{ width: '100%', textAlign: 'center' }}>
+                <div style={{ display: 'inline-block' }}>
+                  <Alert severity="success">
+                    {alertMessage}
+                  </Alert>
+                </div>
+              </div>
+            )}
             {isShowSelectedView === "chart" && <ChartView
               viewClickHandler={viewClickHandler}
               allComplaints={allComplaints}
