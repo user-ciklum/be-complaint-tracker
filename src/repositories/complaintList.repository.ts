@@ -5,7 +5,7 @@ interface IComplaintListRepository {
   save(complaintList: ComplaintList): Promise<ComplaintList>;
   retrieveAll(searchParams: ComplaintList): Promise<ComplaintList[]>;
   retrieveById(complaintId: number): Promise<ComplaintList | null>;
-  update(complaintList: ComplaintList): Promise<number>;
+  update(complaintList: ComplaintList): Promise<ComplaintList | null>;
   delete(complaintId: number): Promise<number>;
   deleteAll(): Promise<number>;
 }
@@ -87,7 +87,7 @@ class ComplaintListRepository implements IComplaintListRepository {
     }
   }
 
-  async update(complaintList: ComplaintList): Promise<number> {
+  async update(complaintList: ComplaintList): Promise<ComplaintList | null> {
     const {
       id,
       inistituteId,
@@ -105,11 +105,11 @@ class ComplaintListRepository implements IComplaintListRepository {
       createdBy,
       updatedBy
     } = complaintList;
-
+    
     try {
+      // Perform the update and return the affected rows count
       const affectedRows = await ComplaintList.update(
         {
-          id,
           inistituteId,
           inistituteType,
           complaintType,
@@ -125,11 +125,19 @@ class ComplaintListRepository implements IComplaintListRepository {
           createdBy,
           updatedBy
         },
-        { where: { id: id } }
+        {
+          where: { id: id }
+        }
       );
-
-      return affectedRows[0];
+  
+      if (affectedRows[0] > 0) {
+        const updatedComplaintList = await ComplaintList.findByPk(id);
+        return updatedComplaintList;
+      }
+  
+      return null;
     } catch (error) {
+      console.error("Error updating ComplaintList:", error);
       throw new Error("Failed to update ComplaintList!");
     }
   }

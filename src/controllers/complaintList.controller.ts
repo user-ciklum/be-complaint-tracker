@@ -134,24 +134,26 @@ export default class ComplaintListController {
   }
 
   async update(req: Request, res: Response) {
-    let ComplaintList: ComplaintList = req.body;
-    ComplaintList.id = parseInt(req.params.id);
-
+    let complaintData: ComplaintList = req.body; 
+    complaintData.id = parseInt(req.params.id);
+  
     try {
-      const num = await complaintListRepository.update(ComplaintList);
-
-      if (num == 1) {
-        res.send({
-          message: "ComplaintList was updated successfully."
-        });
+      // Calling the update method from the repository
+      const updatedComplaintList = await complaintListRepository.update(complaintData);
+  
+      if (updatedComplaintList) {
+        // Send the updated complaint list if found
+        res.status(200).send(updatedComplaintList);
       } else {
+        // If no rows were updated, send a 404 error
         res.send({
-          message: `Cannot update ComplaintList with id=${ComplaintList.id}. Maybe ComplaintList was not found or req.body is empty!`
+          message: `Cannot update ComplaintList with id=${complaintData.id}. Maybe ComplaintList was not found!`
         });
       }
     } catch (err) {
+      // In case of error, send a 500 error with a meaningful message
       res.status(500).send({
-        message: `Error updating ComplaintList with id=${ComplaintList.id}.`
+        message: `Error updating ComplaintList with id=${complaintData.id}.`
       });
     }
   }
