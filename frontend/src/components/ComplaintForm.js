@@ -3,7 +3,6 @@ import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle,
   TextField, Typography, FormControl, FormLabel, RadioGroup,
   FormControlLabel, Radio, Alert,
-  Paper
 } from '@mui/material';
 import { NotInterested, Check } from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
@@ -11,7 +10,7 @@ import CommonService from './Common.Service';
 import CommonApiCallService from './CommonApiCall.Service';
 import { CommonContext } from './Dashboard';
 
-const complaintsToOptionsNonStudentRole = ['Teacher', 'Student', 'Management'];
+const complaintsToOptionsNonStudentRole = ['Student', 'Teacher', 'Management'];
 const complaintsToOptionsStudentRole = ['Teacher', 'Management'];
 const severities = ['High', 'Moderate', 'Low'];
 
@@ -142,7 +141,7 @@ const ComplaintForm = ({ open, onClose, user, allUsers }) => {
               setSelectedComplaintDetail('');
             }}
           >
-            {['Teacher', 'Student', 'Transport', 'Management'].map((option) => (
+            {['Student', 'Teacher', 'Management', 'Transport'].map((option) => (
               <FormControlLabel
                 key={option}
                 value={option}
