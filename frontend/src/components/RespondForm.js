@@ -8,6 +8,7 @@ import {NotInterested, Check} from '@mui/icons-material';
 import { Autocomplete } from '@mui/material';
 import CommonApiCallService from './CommonApiCall.Service';
 import { CommonContext } from './Dashboard';
+import CommonService from './Common.Service';
 
 const statuses = ['New', 'Inprogress', 'Closed'];
 
@@ -73,7 +74,20 @@ const RespondForm = ({ open, onClose, selectedComplaint, viewBackClickHandler })
             </Alert>
           )}
         </DialogTitle>
-        <DialogContent>        
+        <DialogContent>
+          Complainant : <strong>{CommonService.getUserNameById(commonContext?.allUsers, selectedComplaint.createdBy)}</strong>
+
+          {/* Text Area for Complaint Description */}
+          <TextField
+            label="Description"
+            readOnly
+            multiline
+            rows={3}
+            fullWidth
+            disabled
+            margin="normal"
+            value={selectedComplaint?.description || ""}  
+          />
           <Autocomplete
             options={statuses}
             value={status}
