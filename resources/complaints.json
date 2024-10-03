@@ -1,0 +1,17 @@
+[
+  {
+    "inistituteId": 1,
+    "inistituteType": "school",
+    "complaintType": "student",
+    "categoryType": "student",
+    "complaintOn": 17,
+    "assignedType": "teacher",
+    "assignedTo": 9,
+    "criticality": "High",
+    "description": "He is using very bad language in school",
+    "status": "New",
+    "createdBy": 3,
+    "createdAt": "2024-10-03 06:52:59",
+    "updatedAt": "2024-10-03 06:52:59"
+  }
+]

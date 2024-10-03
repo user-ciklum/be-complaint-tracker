@@ -31,5 +31,5 @@ npm run start
 ### Insert Sample Data
 To insert sample user data into the database, invoke the following API:
 
-GET http://localhost:3001/api/users/bulk/insert
+GET http://localhost:3001/api/load
 Ensure your backend server is running before making the request.
