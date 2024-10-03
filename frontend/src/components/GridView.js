@@ -22,6 +22,7 @@ const GridView = (props) => {
   const [statusFilter, setStatusFilter] = useState('');
   const [criticalityFilter, setCriticalityFilter] = useState('');
   const [complaintList, setComplaintList] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
   
   useEffect(() => {
     let updatedList = CommonService.getUpdatedComplaintList(commonContext?.allUsers, allComplaints);
@@ -47,13 +48,24 @@ const GridView = (props) => {
   });
 
   const columns = [
-    { field: 'complaintType', headerName: 'Category', width: 150 },
+    {
+      field: 'complaintType', headerName: 'Category', width: 150,
+      renderCell: (params) => (
+        <span style={{
+          color: params?.value === "student" ? '#3366cc' :
+            params?.value === "teacher" ? '#ff9900' :
+              params?.value === "management" ? '#dc3912' : '#bf00ff'
+        }}>
+          {params.value}
+        </span>
+      ),
+     },
     { 
       field: 'description', 
       headerName: 'Description', 
-      width: 150, // Decreased width
+      width: 250, // Decreased width
       renderCell: (params) => {
-        const maxLength = 25; // Set the maximum length for description to 25 characters
+        const maxLength = 50; // Set the maximum length for description to 25 characters
         return (
           <div>
             {params.value.length > maxLength ? `${params.value.substring(0, maxLength)}...` : params.value}
@@ -63,9 +75,23 @@ const GridView = (props) => {
     },
     { field: 'createdByName', headerName: 'Created By', width: 150 },
     { field: 'assignedToName', headerName: 'Assigned To', width: 120 },
-    { field: 'criticality', headerName: 'Criticality', width: 130 },
-    { field: 'resolution', headerName: 'Resolution', width: 150 }, // Decreased width
-    { field: 'status', headerName: 'Status', width: 100 }, // Decreased width
+    {
+      field: 'criticality', headerName: 'Criticality', width: 130,
+      renderCell: (params) => (
+        <span style={{ color: params?.value === "High" ? '#dc3912' : params?.value === "Moderate" || params?.value === "Medium" ? '#ff9900' : '#3366cc' }}>
+          {params.value}
+        </span>
+      ),
+     },
+    { field: 'resolution', headerName: 'Resolution', width: 250 }, // Decreased width
+    {
+      field: 'status', headerName: 'Status', width: 100,
+      renderCell: (params) => (
+        <span style={{ color: params?.value === "Closed" ? '#0080ff' : params?.value === "Inprogress" ? '#ffbf00' : '#109618' }}>
+          {params.value}
+        </span>
+      ),
+     }, // Decreased width
     { field: 'createdOnDate', headerName: 'Created On', width: 120 },
     { field: 'updatedByName', headerName: 'Updated By', width: 150 },
     { field: 'updatedOnDate', headerName: 'Updated On', width: 120 },
@@ -91,7 +117,7 @@ const GridView = (props) => {
       </Button>
       <Paper elevation={3} sx={{ padding: 3, borderRadius: '16px', marginTop: '20px', backgroundColor: '#fafafa' }}>
         <Typography variant="h5" sx={{ marginBottom: 2 }}>
-          Complaint Management
+          Complaint List
         </Typography>
         <Box sx={{ marginBottom: 2, display: 'flex', gap: 2 }}>
           <TextField
@@ -141,12 +167,18 @@ const GridView = (props) => {
         </Box>
         <div style={{ minHeight: '300px', width: '100%' }}>
           <DataGrid
-            rows={filteredRows}
+            rows={filteredRows || []}
             columns={columns}
-            pageSize={5}
+            rowHeight={40}  // Adjusted row height to 40px (default is 52px)
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}  // Update page size
+            rowsPerPageOptions={[10, 25, 50]}  // Available options for page size
             pagination
-            rowsPerPageOptions={[5, 10, 25]} // Added more rows per page options
-            autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 10, page: 0 }, // Set the initial pageSize to 10
+              },
+            }}
             sx={{
               borderRadius: '8px',
               '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {

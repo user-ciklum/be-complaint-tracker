@@ -122,15 +122,15 @@ const DetailView = (props) => {
             Back
           </Button>
 
-          <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={respondClickHandler}
-              sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px'}}
-              >
-              {<Reply />} &nbsp;&nbsp;Respond&nbsp;&nbsp;
-          </Button>          
+          {selectedDetail?.status != "Closed" && <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={respondClickHandler}
+            sx={{ mpadding: '16px 16px', borderRadius: '12px', height: '40px' }}
+          >
+            {<Reply />} &nbsp;&nbsp;Respond&nbsp;&nbsp;
+          </Button>}
         </div>
 
         <RespondForm
