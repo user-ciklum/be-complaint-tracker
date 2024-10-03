@@ -82,9 +82,9 @@ const CommonService = {
 
         allUsers.forEach((user) => {
             if (role.toLowerCase() === "student" && user.role === role.toLowerCase()) usersListByRole.push({ label: `${user.name} (${user.class[0]})`, value: user.id });
-            if (role.toLowerCase() === "teacher" && user.role === role.toLowerCase()) usersListByRole.push({ label: user.name, value: user.id});
-        if (['transport', 'management'].includes(role.toLowerCase()) && !['teacher', 'student'].includes(user.role))
-            usersListByRole.push({ label: user.name, value: user.id});
+            if (role.toLowerCase() === "teacher" && user.role === role.toLowerCase()) usersListByRole.push({ label: user.name, value: user.id });
+            if (role.toLowerCase() === "transport" && user.role === role.toLowerCase()) usersListByRole.push({ label: user.name, value: user.id });
+            if (role.toLowerCase() === "management" && user.role === "admin") usersListByRole.push({ label: user.name, value: user.id});
         });
 
         return usersListByRole || [];

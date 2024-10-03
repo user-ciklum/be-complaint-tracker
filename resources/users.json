@@ -610,5 +610,53 @@
     "username": "aadvika",
     "email": "aadvika@complaint.com",
     "password": "aadvika"
+  },
+  {
+    "name": "Kiyansh",
+    "role": "transport",
+    "institute_type": "school",
+    "institute_id": 1,
+    "mobilenumber": "9876543227",
+    "active": true,
+    "class": [],
+    "username": "kiyansh",
+    "email": "kiyansh@complaint.com",
+    "password": "kiyansh"
+  },
+  {
+      "name": "Vivaan",
+      "role": "transport",
+      "institute_type": "school",
+      "institute_id": 1,
+      "mobilenumber": "9876543228",
+      "active": true,
+      "class": [],
+      "username": "vivaan",
+      "email": "vivaan@complaint.com",
+      "password": "vivaan"
+  },
+  {
+      "name": "Atharv",
+      "role": "transport",
+      "institute_type": "school",
+      "institute_id": 1,
+      "mobilenumber": "9876543229",
+      "active": true,
+      "class": [],
+      "username": "atharv",
+      "email": "atharv@complaint.com",
+      "password": "atharv"
+  },
+  {
+      "name": "Rihaan",
+      "role": "transport",
+      "institute_type": "school",
+      "institute_id": 1,
+      "mobilenumber": "9876543230",
+      "active": true,
+      "class": [],
+      "username": "rihaan",
+      "email": "rihaan@complaint.com",
+      "password": "rihaan"
   }
 ]
