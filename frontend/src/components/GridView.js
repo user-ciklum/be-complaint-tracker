@@ -140,13 +140,12 @@ const GridView = (props) => {
           </FormControl>
         </Box>
         <div style={{ minHeight: '300px', width: '100%' }}>
-          <DataGrid
+        <DataGrid
             rows={filteredRows}
             columns={columns}
-            pageSize={5}
             pagination
-            rowsPerPageOptions={[5, 10, 25]} // Added more rows per page options
-            autoHeight
+            rowHeight={40}  // Adjusted row height to 40px (default is 52px)
+            rowsPerPageOptions={[10, 25, 50]}  // Updated rows per page options
             sx={{
               borderRadius: '8px',
               '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
@@ -175,6 +174,8 @@ const GridView = (props) => {
                 backgroundColor: '#e0f7fa'
               },
               minHeight: '300px',
+              maxHeight: '580px',
+              overflowY: 'scroll',  // Enable vertical scrolling
             }}
             disableRowSelectionOnClick
             onRowClick={handleRowClick}
