@@ -10,6 +10,7 @@ const displayStatuses = { New: "New", Inprogress: "In progress", Closed: "Closed
 
 const DetailView = (props) => {
   const commonContext = useContext(CommonContext);
+  let user = commonContext && commonContext?.user;
   let { viewClickHandler, chartType, selectedDetail } = props;
   const [open, setOpen] = useState(false);
 
@@ -122,7 +123,9 @@ const DetailView = (props) => {
             Back
           </Button>
 
-          {selectedDetail?.status != "Closed" && <Button
+          {selectedDetail?.status != "Closed" &&
+            ((user.role == "student" && user.id == selectedDetail.assignedTo) || user.role != "student")
+            && <Button
             type="submit"
             variant="contained"
             color="primary"
